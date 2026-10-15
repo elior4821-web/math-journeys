@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>מסעות במתמטיקה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Rubik:wght@400;500&display=swap">
+<style>
+:root { --bg: #EDF3F1; --surface: #FFFFFF; --ink: #15313A; --muted: #587076; --line: #C5D7D3; --accent: #1C6F6A; --a: #E8961A; --b: #3E7CB1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0E1C1E; --surface: #162A2D; --ink: #E3EEEC; --muted: #9AB1AF; --line: #2B4447; --accent: #46B9AE; --a: #F2A93A; --b: #6FA8DC; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0E1C1E; --surface: #162A2D; --ink: #E3EEEC; --muted: #9AB1AF; --line: #2B4447; --accent: #46B9AE; --a: #F2A93A; --b: #6FA8DC; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 'Rubik', 'Segoe UI', Arial, sans-serif; }
+main { max-width: 560px; margin: 0 auto; padding: 40px 16px; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-family: 'Fredoka', 'Rubik', sans-serif; font-weight: 600; font-size: 2.2rem; margin: 0; text-align: center; }
+p.sub { margin: 0 0 8px; text-align: center; color: var(--muted); }
+a.card { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; color: inherit; text-decoration: none; min-height: 88px; }
+a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+a.card svg { width: 64px; height: 48px; flex: none; }
+a.card b { display: block; font-family: 'Fredoka', 'Rubik', sans-serif; font-size: 1.35rem; font-weight: 600; }
+a.card span { color: var(--muted); font-size: 15px; }
+.t { stroke: var(--ink); stroke-width: 2.5; fill: var(--surface); }
+.fa { fill: var(--a); } .fb { fill: var(--b); }
+</style>
+</head>
+<body>
+<main>
+<h1>מסעות במתמטיקה</h1>
+<p class="sub">בוחרים מסע, כותבים שם פרטי ואות, ומתחילים.</p>
+<a class="card" href="fractions/"><svg viewBox="0 0 64 48" aria-hidden="true"><rect class="t fa" x="2" y="8" width="15" height="32" rx="2"/><rect class="t fa" x="17" y="8" width="15" height="32" rx="2"/><rect class="t fa" x="32" y="8" width="15" height="32" rx="2"/><rect class="t" x="47" y="8" width="15" height="32" rx="2"/></svg><div><b>מסע השברים</b><span>20 שאלות על שברים · כיתה ה׳</span></div></a>
+<a class="card" href="quadrilaterals/"><svg viewBox="0 0 64 48" aria-hidden="true"><path class="t fb" d="M4,42 L12,8 L30,8 L22,42 Z"/><path class="t fb" d="M36,40 L44,6 L60,22 L52,44 Z"/></svg><div><b>מסע המרובעים</b><span>30 שאלות על צורות ומרובעים · כיתה ה׳</span></div></a>
+</main>
+</body>
+</html>

@@ -1,0 +1,2211 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<script>window.MJ_API = "https://script.google.com/macros/s/AKfycbx-Xe9DsqGT_UzI3iUoHsLP-r5SCtfLAFyt5so9aGf56OGOFaDBHs4rPfj3JqJwUfFM-A/exec";</script>
+</head>
+<body>
+<title>מסע המרובעים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Rubik:wght@400;500;700&display=swap">
+<style>
+/* Layout: one calm column for the child (question card + journey trail), a scan-first dashboard for the teacher, one huge QR for the projector. */
+:root {
+  --bg: #EDF3F1; --surface: #FFFFFF; --sunk: #E2ECE9; --ink: #15313A; --muted: #587076; --line: #C5D7D3;
+  --shade: #F5A623; --pre: #2F9C92; --accent: #1C6F6A; --accent-ink: #FFFFFF; --focus: #E2683C;
+  --ok: #23845A; --ok-bg: #DDF1E6; --warn: #A86D00; --warn-bg: #FBEBCB; --bad: #B83B33; --bad-bg: #F8DEDA;
+  --tA: #E8961A; --tB: #2F9C92; --tC: #D9604C; --tD: #6F64C8; --tG: #3E7CB1;
+  --gfill: #FBF1DC; --gred: #D62839; --gsel: #1F6FD1;
+  --font-display: 'Fredoka', 'Rubik', 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Rubik', 'Segoe UI', Arial, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1C1E; --surface: #162A2D; --sunk: #102224; --ink: #E3EEEC; --muted: #9AB1AF; --line: #2B4447;
+  --shade: #F6B444; --pre: #46B9AE; --accent: #46B9AE; --accent-ink: #062120; --focus: #FF9A6C;
+  --ok: #5CC58C; --ok-bg: #173B2B; --warn: #E8B54E; --warn-bg: #3A2E14; --bad: #F07D73; --bad-bg: #42201D;
+  --tA: #F2A93A; --tB: #46B9AE; --tC: #EE7D6A; --tD: #958BEA; --tG: #6FA8DC;
+  --gfill: #22393C; --gred: #FF6B6B; --gsel: #6FB1FF; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E1C1E; --surface: #162A2D; --sunk: #102224; --ink: #E3EEEC; --muted: #9AB1AF; --line: #2B4447;
+  --shade: #F6B444; --pre: #46B9AE; --accent: #46B9AE; --accent-ink: #062120; --focus: #FF9A6C;
+  --ok: #5CC58C; --ok-bg: #173B2B; --warn: #E8B54E; --warn-bg: #3A2E14; --bad: #F07D73; --bad-bg: #42201D;
+  --tA: #F2A93A; --tB: #46B9AE; --tC: #EE7D6A; --tD: #958BEA; --tG: #6FA8DC;
+  --gfill: #22393C; --gred: #FF6B6B; --gsel: #6FB1FF; color-scheme: dark; }
+
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font-body); }
+#app { min-height: 100vh; padding-inline: 16px; padding-block: 12px 40px; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
+a { color: var(--accent); }
+.wrap { max-width: 560px; margin-inline: auto; display: flex; flex-direction: column; gap: 16px; }
+.wide { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+
+/* preview bar */
+.pbar { max-width: 1120px; margin: 0 auto 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px; border: 1px dashed var(--line); border-radius: var(--r); font-size: 14px; color: var(--muted); }
+.pbar strong { color: var(--ink); }
+.tabs { display: inline-flex; background: var(--sunk); border-radius: 999px; padding: 3px; gap: 2px; }
+.tabs button { border: 0; background: transparent; padding: 5px 14px; border-radius: 999px; cursor: pointer; color: var(--muted); }
+.tabs button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+
+/* buttons & fields */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 2px solid var(--line); background: var(--surface); padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 500; text-decoration: none; color: var(--ink); min-height: 44px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.big { font-family: var(--font-display); font-size: 1.25rem; padding: 14px 24px; min-height: 58px; border-radius: 16px; width: 100%; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }
+.btn.sm { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+label { font-weight: 500; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+input[type=text], input[type=password], input[inputmode], select { border: 2px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px; min-height: 50px; font-size: 1.1rem; width: 100%; }
+input:focus { border-color: var(--accent); outline: none; }
+.err { color: var(--bad); font-weight: 500; margin: 0; }
+.muted { color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+
+/* ===== child ===== */
+.brand { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding-top: 14px; }
+.brand h1 { font-size: 2.3rem; }
+.brand p { margin: 0; color: var(--muted); }
+.logo { width: 120px; height: 72px; }
+.logo .pt { stroke-width: 2.5; }
+.startform { display: flex; flex-direction: column; gap: 14px; }
+.topline { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 500; background: var(--sunk); white-space: nowrap; }
+.chip .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+.chip.tG { color: var(--tG); } .chip.tA { color: var(--tA); } .chip.tB { color: var(--tB); } .chip.tC { color: var(--tC); } .chip.tD { color: var(--tD); }
+.chip.tG span:last-child, .chip.tA span:last-child, .chip.tB span:last-child, .chip.tC span:last-child, .chip.tD span:last-child { color: var(--ink); }
+.count { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 15px; }
+.trail { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.trail .seg { display: flex; gap: 4px; }
+.trail i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); display: block; }
+.trail .seg.tG i.d { background: var(--tG); border-color: var(--tG); }
+.trail .seg.tA i.d { background: var(--tA); border-color: var(--tA); }
+.trail .seg.tB i.d { background: var(--tB); border-color: var(--tB); }
+.trail .seg.tC i.d { background: var(--tC); border-color: var(--tC); }
+.trail .seg.tD i.d { background: var(--tD); border-color: var(--tD); }
+.trail i.cur { border-color: var(--ink); transform: scale(1.25); }
+.qcard { display: flex; flex-direction: column; gap: 18px; padding: 20px 18px; }
+.qtext { display: flex; align-items: flex-start; gap: 10px; }
+.qtext h2 { font-family: var(--font-body); font-weight: 500; font-size: 1.3rem; line-height: 1.6; flex: 1; min-width: 0; }
+.say { flex: none; width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--line); background: var(--sunk); display: grid; place-items: center; cursor: pointer; }
+.say svg { width: 22px; height: 22px; fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.say.on { border-color: var(--accent); background: var(--accent); }
+.say.on svg { stroke: var(--accent-ink); }
+.hint { margin: -8px 0 0; color: var(--muted); font-size: 15px; }
+.fr { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.05; font-family: var(--font-display); font-weight: 600; font-size: 1.12em; margin: 0 .15em; font-variant-numeric: tabular-nums; }
+.fr > span:first-child { border-bottom: 2.5px solid currentColor; padding: 0 .2em .05em; }
+.fr > span:last-child { padding: .05em .2em 0; }
+.fr .box { display: inline-block; width: .9em; height: 1em; border: 2px dashed currentColor; border-radius: 4px; vertical-align: -0.1em; }
+.visual { display: flex; justify-content: center; }
+.visual svg, .opt svg { max-width: 100%; height: auto; }
+.shape { width: 100%; max-width: 320px; }
+.shape.circ { max-width: 200px; }
+.wholes { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.wholes .shape { max-width: 150px; }
+.items { width: 100%; max-width: 340px; }
+.pt { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+.pt.on { fill: var(--shade); }
+.pt.pre { fill: var(--pre); }
+.it.pt { stroke-width: 2.5; }
+.tap .pt:not(.pre) { cursor: pointer; }
+.tap .pt:not(.pre):hover { fill: var(--sunk); }
+.tap .pt.on:not(.pre):hover { fill: var(--shade); }
+.tap .pt:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+.tally { text-align: center; color: var(--muted); font-size: 15px; margin: -6px 0 0; font-variant-numeric: tabular-nums; }
+.nline { width: 100%; max-width: 520px; touch-action: none; user-select: none; }
+.nline .ax { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.nline .tk { stroke: var(--ink); stroke-width: 2; }
+.nline .tk.mj { stroke-width: 3; }
+.nline .lb { fill: var(--ink); font: 600 19px var(--font-display); }
+.nline .pnt { fill: var(--tC); stroke: var(--surface); stroke-width: 2; }
+.nline .pl { fill: var(--ink); font: 600 18px var(--font-display); }
+.nline .mk path, .nline .mk circle { fill: var(--shade); stroke: var(--ink); stroke-width: 2; }
+.nline .mk line { stroke: var(--ink); stroke-width: 2; }
+.nline.tap { cursor: pointer; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.opt { border: 2px solid var(--line); background: var(--surface); border-radius: 14px; min-height: 64px; padding: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; font-weight: 500; text-align: center; }
+.opt.svgopt { min-height: 90px; }
+.opt.svgopt svg { width: 100%; max-width: 200px; }
+.opt[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); background: var(--sunk); }
+.opts.one { grid-template-columns: 1fr; }
+.fin { display: flex; justify-content: center; }
+.fin .fstack { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; }
+.fin .bar { width: 92px; height: 4px; background: var(--ink); border-radius: 2px; }
+.numin { width: 92px !important; text-align: center; font-family: var(--font-display); font-size: 1.6rem !important; font-weight: 600; padding: 8px !important; }
+.status-line { text-align: center; font-size: 14px; color: var(--muted); min-height: 1.4em; margin: 0; }
+.status-line.warn { color: var(--warn); }
+.endcard { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 20px; }
+.endcard h2 { font-size: 1.8rem; }
+.endcard p { margin: 0; max-width: 34ch; }
+
+/* ===== teacher ===== */
+.thead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.thead h1 { font-size: 1.9rem; }
+.thead .sub { color: var(--muted); margin: 2px 0 0; }
+.controls { display: flex; flex-direction: column; gap: 14px; }
+.ctlrow { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ctlrow select { width: auto; min-width: 0; max-width: 100%; min-height: 44px; font-size: 15px; padding: 8px 12px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; font-weight: 500; font-size: 15px; }
+.pill::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.pill.open { background: var(--ok-bg); color: var(--ok); }
+.pill.closed { background: var(--sunk); color: var(--muted); }
+.linkbox { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.linkbox code { background: var(--sunk); padding: 6px 10px; border-radius: 8px; direction: ltr; overflow-wrap: anywhere; min-width: 0; flex: 1; font-size: 13px; }
+.inline-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 12px; background: var(--sunk); border-radius: 12px; }
+.inline-form input { flex: 1; min-width: 180px; min-height: 44px; font-size: 15px; }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tcard .tn { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 15px; }
+.tcard .tn .dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.tcard .pct { font-family: var(--font-display); font-size: 2.2rem; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.tcard .meter { height: 8px; background: var(--sunk); border-radius: 4px; overflow: hidden; }
+.tcard .meter > span { display: block; height: 100%; border-radius: 4px; }
+td .tier { font-size: 12px; color: var(--muted); margin-top: 4px; white-space: nowrap; }
+.tcard .meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sec { display: flex; flex-direction: column; gap: 12px; }
+.sec > h2 { font-size: 1.35rem; }
+.sec > .lead { margin: -6px 0 0; color: var(--muted); font-size: 15px; }
+.summary-line { color: var(--muted); font-variant-numeric: tabular-nums; }
+.misl { display: flex; flex-direction: column; gap: 10px; }
+.mis { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.mis > summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: center; }
+.mis > summary::-webkit-details-marker { display: none; }
+.mis > summary .nm { font-weight: 700; min-width: 0; }
+.mis > summary .ct { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mis > summary .bar { grid-column: 2 / 4; height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.mis > summary .bar span { display: block; height: 100%; background: var(--bad); border-radius: 3px; }
+.more > summary { list-style: none; width: max-content; }
+.more > summary::-webkit-details-marker { display: none; }
+.mis[open] > summary { border-bottom: 1px solid var(--line); }
+.misbody { padding: 14px 16px 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; }
+.misbody h4 { margin: 0 0 4px; font-size: 13px; letter-spacing: .02em; color: var(--muted); font-weight: 500; }
+.misbody p { margin: 0; }
+.misbody .full { grid-column: 1 / -1; }
+.names { display: flex; flex-wrap: wrap; gap: 6px; }
+.names span { background: var(--sunk); border-radius: 999px; padding: 3px 10px; font-size: 14px; }
+.names span b { font-weight: 500; color: var(--muted); margin-inline-start: 4px; font-variant-numeric: tabular-nums; }
+.groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.group { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; border-top: 5px solid var(--gc, var(--line)); }
+.group h3 { font-size: 1.1rem; }
+.group p { margin: 0; font-size: 14px; color: var(--muted); }
+.tblwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 15px; }
+th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: 13px; color: var(--muted); font-weight: 500; background: var(--sunk); position: sticky; top: 0; }
+tr.srow { cursor: pointer; }
+tr.srow:hover td { background: var(--sunk); }
+td.nm { font-weight: 500; white-space: nowrap; }
+.sc { display: inline-flex; align-items: baseline; gap: 6px; padding: 3px 10px; border-radius: 8px; font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+.sc small { font-weight: 400; font-size: 12px; opacity: .85; }
+.sc.g { background: var(--ok-bg); color: var(--ok); }
+.sc.m { background: var(--warn-bg); color: var(--warn); }
+.sc.b { background: var(--bad-bg); color: var(--bad); }
+.sc.n { background: var(--sunk); color: var(--muted); }
+.st { font-size: 13px; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.st.done { background: var(--ok-bg); color: var(--ok); }
+.st.active { background: var(--warn-bg); color: var(--warn); }
+.detail td { background: var(--bg); padding: 14px; }
+.ansl { display: flex; flex-direction: column; gap: 6px; }
+.ans { display: grid; grid-template-columns: 34px 1fr; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.ans .mark { font-family: var(--font-display); font-weight: 600; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 14px; }
+.ans .mark.c { background: var(--ok-bg); color: var(--ok); }
+.ans .mark.w { background: var(--bad-bg); color: var(--bad); }
+.ans .meta { color: var(--muted); font-size: 13px; }
+.ans .mtag { color: var(--bad); font-weight: 500; }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--r); }
+.toast { position: fixed; inset-inline: 0; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); margin-inline: auto; width: max-content; max-width: calc(100% - 32px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 12px; font-size: 15px; z-index: 9; }
+
+/* ===== projector ===== */
+.proj { max-width: 1000px; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: center; padding-top: 3vh; }
+.proj h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); }
+.proj .steps { font-size: clamp(1.1rem, 2.2vw, 1.6rem); margin: 18px 0 0; padding-inline-start: 1.2em; display: flex; flex-direction: column; gap: 8px; }
+.qrbox { background: #FFFFFF; padding: 18px; border-radius: 20px; border: 1px solid var(--line); }
+.qrbox #qr { width: min(40vw, 380px); aspect-ratio: 1; }
+.qrbox #qr img, .qrbox #qr canvas { width: 100% !important; height: auto !important; display: block; }
+.pcount { display: flex; gap: 28px; margin-top: 26px; flex-wrap: wrap; }
+.pcount div { display: flex; flex-direction: column; }
+.pcount b { font-family: var(--font-display); font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.pcount span { color: var(--muted); font-size: 1.1rem; }
+.purl { direction: ltr; text-align: center; font-size: 13px; color: #33484C; margin: 10px 0 0; max-width: 380px; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .misbody { grid-template-columns: 1fr; }
+  .proj { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .proj .steps { text-align: start; }
+  .qrbox #qr { width: min(70vw, 320px); }
+  .pcount { justify-content: center; }
+}
+@media (max-width: 380px) { .opts { grid-template-columns: 1fr; } }
+/* ===== geometry ===== */
+.geo { width: 100%; max-width: 360px; height: auto; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.geo.tile { max-width: 100%; display: block; }
+.g-fill { fill: var(--gfill); }
+.g-sd { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.g-sd.red { stroke: var(--gred); stroke-width: 6.5; }
+.g-sd.sel { stroke: var(--gsel); stroke-width: 7; }
+.tile .g-sd { stroke-width: 3; } .tile .g-sd.red { stroke-width: 5.5; }
+.g-hit { fill: none; stroke: rgba(0,0,0,0); stroke-width: 34; stroke-linecap: round; cursor: pointer; }
+.g-hit:focus-visible { outline: none; stroke: rgba(226,104,60,.3); }
+.g-vx { fill: var(--ink); }
+.g-exl { stroke: var(--gred); stroke-width: 2; stroke-dasharray: 7 6; opacity: .85; }
+.g-vhit { fill: rgba(31,111,209,.12); stroke: var(--gsel); stroke-width: 2; stroke-dasharray: 4 3; cursor: pointer; }
+.g-raq { fill: rgba(245,166,35,.38); stroke: #B7791F; stroke-width: 2; }
+.g-ram { fill: none; stroke: #8A5A12; stroke-width: 2; }
+.g-cand { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.g-cand.on { fill: var(--gsel); stroke: var(--gsel); }
+.g-chit { fill: rgba(0,0,0,0); cursor: pointer; }
+.g-chit:focus-visible { outline: none; stroke: var(--focus); stroke-width: 3; }
+.tools { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: -6px; }
+.tool { min-height: 40px; font-size: 15px; padding: 6px 14px; }
+.tool[aria-pressed="true"] { border-color: var(--accent); background: var(--sunk); box-shadow: inset 0 0 0 1px var(--accent); }
+.toolnote { text-align: center; color: var(--muted); font-size: 14px; margin: -10px 0 0; }
+.defrow { display: flex; justify-content: flex-start; margin-top: -8px; }
+.defbtn { min-height: 36px; padding: 4px 12px; font-size: 14px; border-radius: 999px; }
+.defs { background: var(--sunk); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 12px; margin-top: -6px; }
+.def { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; font-size: 15px; }
+.def svg { width: 96px; height: auto; }
+.def b { display: block; }
+.t-ln, .t-ok { fill: var(--gfill); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+.t-hl { fill: none; stroke: var(--gred); stroke-width: 4.5; stroke-linecap: round; }
+.t-dot { fill: var(--gred); }
+.picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pickt { position: relative; border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 6px; cursor: pointer; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+.pickt[aria-pressed="true"] { border-color: var(--gsel); box-shadow: inset 0 0 0 2px var(--gsel); background: var(--sunk); }
+.pickt .ck { position: absolute; top: 6px; inset-inline-start: 6px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); display: grid; place-items: center; font-weight: 700; color: transparent; font-size: 15px; }
+.pickt[aria-pressed="true"] .ck { background: var(--gsel); border-color: var(--gsel); color: #fff; }
+.dgrid { width: 100%; max-width: 300px; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.dg-dot { fill: var(--ink); }
+.dg-hit { fill: rgba(0,0,0,0); cursor: pointer; }
+.dg-hit:focus-visible { outline: none; stroke: var(--focus); stroke-width: 3; }
+.dg-pick { fill: var(--gsel); }
+.dg-seg { stroke: var(--gred); stroke-width: 7; stroke-linecap: round; }
+.dg-end { fill: var(--gred); }
+.dg-ln { stroke: var(--gsel); stroke-width: 5; stroke-linecap: round; }
+.dg-cl { stroke: var(--gsel); stroke-width: 3; stroke-dasharray: 6 5; stroke-linecap: round; }
+.dg-poly { fill: var(--gfill); opacity: .85; }
+.dgbar { display: flex; justify-content: center; gap: 10px; align-items: center; margin-top: -6px; flex-wrap: wrap; }
+.dgbar span { color: var(--muted); font-size: 15px; }
+.opt.svgopt { padding: 6px; }
+.ans .tag { color: var(--muted); font-size: 12px; background: var(--sunk); border-radius: 999px; padding: 1px 8px; margin-inline-start: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  .qcard { animation: rise .28s ease-out; }
+  @keyframes rise { from { transform: translateY(6px); opacity: .6; } to { transform: none; opacity: 1; } }
+}
+</style>
+<div id="app" dir="rtl" lang="he">
+  <div id="pbar" class="pbar" hidden></div>
+  <main id="view"><p class="muted" style="text-align:center">טוען…</p></main>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ===== מסע המרובעים – מנוע שאלות, אבחון והמלצות ===== */
+var FR = (function () {
+  'use strict';
+
+  /* ---------- כלים ---------- */
+  function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  function rndf(a, b) { return a + Math.random() * (b - a); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function range(n) { var r = []; for (var i = 0; i < n; i++) r.push(i); return r; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // *מילה* = הדגשה
+  function toHTML(t) { return esc(t).replace(/\*([^*]+)\*/g, '<strong>$1</strong>'); }
+  function toPlain(t) { return String(t).replace(/\*/g, ''); }
+  function toSpeech(t) { return toPlain(t); }
+  function r1(x) { return Math.round(x * 10) / 10; }
+
+  /* ---------- גאומטריה ---------- */
+  var DEG = Math.PI / 180;
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1]]; }
+  function cross(a, b) { return a[0] * b[1] - a[1] * b[0]; }
+  function dot(a, b) { return a[0] * b[0] + a[1] * b[1]; }
+  function len(v) { return Math.sqrt(v[0] * v[0] + v[1] * v[1]); }
+  function sideVec(p, i) { return sub(p[(i + 1) % p.length], p[i]); }
+  // הפרש בין כיווני שני ישרים, 0–90 מעלות
+  function lineDiff(u, v) {
+    var d = Math.abs(Math.atan2(u[1], u[0]) - Math.atan2(v[1], v[0])) / DEG % 180;
+    return d > 90 ? 180 - d : d;
+  }
+  function segsCross(a, b, c, d) {
+    function o(p, q, r) { var v = cross(sub(q, p), sub(r, p)); return Math.abs(v) < 1e-9 ? 0 : v > 0 ? 1 : -1; }
+    var o1 = o(a, b, c), o2 = o(a, b, d), o3 = o(c, d, a), o4 = o(c, d, b);
+    return o1 * o2 < 0 && o3 * o4 < 0;
+  }
+  function isSimple(p) {
+    var n = p.length;
+    for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) {
+      if (j === i + 1 || (i === 0 && j === n - 1)) continue;
+      if (segsCross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n])) return false;
+    }
+    return true;
+  }
+  function isConvex(p) {
+    var n = p.length, s = 0;
+    for (var i = 0; i < n; i++) {
+      var c = cross(sideVec(p, i), sideVec(p, (i + 1) % n));
+      if (Math.abs(c) < 1e-9) continue;
+      var sg = c > 0 ? 1 : -1;
+      if (!s) s = sg; else if (sg !== s) return false;
+    }
+    return true;
+  }
+  // זוגות צלעות מקבילות / מאונכות, ומרחק מהמקרה הגבולי (כדי שלא יהיו מקרים "כמעט")
+  function props(p) {
+    var n = p.length, par = 0, perp = 0, nearPar = 99, nearPerp = 99;
+    for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) {
+      var d = lineDiff(sideVec(p, i), sideVec(p, j));
+      if (d < 0.5) par++; else nearPar = Math.min(nearPar, d);
+      if (Math.abs(d - 90) < 0.5) perp++; else nearPerp = Math.min(nearPerp, Math.abs(d - 90));
+    }
+    return { par: par, perp: perp, nearPar: nearPar, nearPerp: nearPerp };
+  }
+  function rotate(p, a) { var c = Math.cos(a), s = Math.sin(a); return p.map(function (q) { return [q[0] * c - q[1] * s, q[0] * s + q[1] * c]; }); }
+  function mirror(p) { return p.map(function (q) { return [-q[0], q[1]]; }).reverse(); }
+  function minSide(p) { var m = 1e9; for (var i = 0; i < p.length; i++) m = Math.min(m, len(sideVec(p, i))); return m; }
+
+  /* ---------- מחסן צורות ---------- */
+  function regularish(n) {
+    var a0 = rndf(0, 360) * DEG, pts = [];
+    for (var i = 0; i < n; i++) { var a = a0 + (i + rndf(-0.18, 0.18)) * 2 * Math.PI / n, r = rndf(0.85, 1.1); pts.push([r * Math.cos(a), r * Math.sin(a)]); }
+    return pts;
+  }
+  var MAKE = {
+    square: function () { return [[0, 0], [1, 0], [1, 1], [0, 1]]; },
+    rect: function () { var r = rndf(1.5, 2.2); return [[0, 0], [r, 0], [r, 1], [0, 1]]; },
+    para: function () { var w = rndf(1.5, 2), h = rndf(0.8, 1.1), s = pick([-1, 1]) * rndf(0.45, 0.8); return [[0, 0], [w, 0], [w + s, h], [s, h]]; },
+    rhombus: function () { var a = rndf(55, 68) * DEG; return [[0, 0], [1, 0], [1 + Math.cos(a), Math.sin(a)], [Math.cos(a), Math.sin(a)]]; },
+    trapIso: function () { var b = rndf(2, 2.4), t = rndf(0.8, 1.3), h = rndf(0.8, 1.1), o = (b - t) / 2; return [[0, 0], [b, 0], [b - o, h], [o, h]]; },
+    trapRight: function () { var b = rndf(1.8, 2.3), t = rndf(0.9, 1.4), h = rndf(0.9, 1.2); return [[0, 0], [b, 0], [t, h], [0, h]]; },
+    trapScal: function () { var b = rndf(2, 2.4), h = rndf(0.8, 1.1), x1 = rndf(0.25, 0.55), x2 = Math.min(x1 + rndf(0.8, 1.2), b - 0.35); return [[0, 0], [b, 0], [x2, h], [x1, h]]; },
+    kite: function () { var w = rndf(0.55, 0.75), a = rndf(0.45, 0.7), L = rndf(1.7, 2.1); return [[0, 0], [a, -w], [L, 0], [a, w]]; },
+    general: function () {
+      var a = [rndf(-20, 20), rndf(70, 110), rndf(160, 200), rndf(250, 290)];
+      return a.map(function (d, i) { var r = [rndf(0.7, 1.3), rndf(0.5, 0.9), rndf(0.9, 1.4), rndf(0.6, 1.1)][i]; return [r * Math.cos(d * DEG), r * Math.sin(d * DEG)]; });
+    },
+    dart: function () { var L = rndf(1.8, 2.2), w = rndf(0.7, 0.95), r = rndf(0.8, 1.15); return [[0, 0], [L, w], [r, 0], [L, -w]]; },
+    tri: function () { return [[0, 0], [rndf(1.6, 2.1), rndf(-0.2, 0.2)], [rndf(0.4, 1.4), rndf(0.9, 1.3)]]; },
+    pent: function () { return regularish(5); },
+    hex: function () { return regularish(6); },
+    concPent: function () { var w = rndf(1.8, 2.2), h = rndf(1.1, 1.4), d = rndf(0.45, 0.75); return [[0, 0], [w, 0], [w, h], [w / 2 + rndf(-0.2, 0.2), h - d], [0, h]]; },
+    concHex: function () { var w = rndf(1.8, 2.2), a = rndf(0.6, 0.9), b = rndf(0.8, 1.2), h = rndf(1.4, 1.8); return [[0, 0], [w, 0], [w, a], [b, a], [b, h], [0, h]]; },
+    arrow: function () { var L = rndf(2.2, 2.6), t = rndf(0.25, 0.35), hw = rndf(0.65, 0.85), hl = rndf(0.7, 0.9); return [[0, -t], [L - hl, -t], [L - hl, -hw], [L, 0], [L - hl, hw], [L - hl, t], [0, t]]; },
+    bowtie: function () { var w = rndf(1.8, 2.2), h = rndf(0.9, 1.2), s = rndf(-0.2, 0.2); return [[0, 0], [w, h + s], [w, 0], [0, h - s]]; }
+  };
+  // מה מצופה מכל סוג: מקבילות, מאונכות, קמור
+  var EXPECT = {
+    square: [2, 4, 1], rect: [2, 4, 1], para: [2, 0, 1], rhombus: [2, 0, 1], trapIso: [1, 0, 1], trapRight: [1, 2, 1],
+    trapScal: [1, 0, 1], kite: [0, 0, 1], general: [0, 0, 1], dart: [0, 0, 0], tri: [0, 0, 1]
+  };
+  var NAME = {
+    square: 'ריבוע', rect: 'מלבן', para: 'מקבילית', rhombus: 'מעוין', trapIso: 'טרפז שווה-שוקיים', trapRight: 'טרפז ישר-זווית',
+    trapScal: 'טרפז', kite: 'דלתון', general: 'מרובע ללא צלעות מקבילות', dart: 'מרובע קעור', tri: 'משולש', pent: 'מחומש', hex: 'משושה',
+    concPent: 'מחומש קעור', concHex: 'משושה קעור', arrow: 'מצולע בצורת חץ (7 קודקודים)', bowtie: 'צורת "פרפר" (צלעות נחתכות)'
+  };
+  // mode: 'proto' צלעות אופקיות/אנכיות, 'tilt' מסובב, 'any'
+  function shape(type, mode) {
+    for (var tries = 0; tries < 500; tries++) {
+      var p = MAKE[type]();
+      if (Math.random() < 0.5) p = mirror(p);
+      var m = mode === 'any' ? (Math.random() < 0.5 ? 'proto' : 'tilt') : mode;
+      var a = m === 'tilt' ? pick([-1, 1]) * rndf(18, 40) : (m === 'free' ? rndf(0, 360) : pick([0, 0, 90, 180]));
+      p = rotate(p, a * DEG);
+      if (type === 'bowtie') return p;
+      if (!isSimple(p)) continue;
+      var e = EXPECT[type];
+      if (e) {
+        var pr = props(p);
+        if (pr.par !== e[0] || pr.perp !== e[1] || pr.nearPar < 11 || pr.nearPerp < 11 || isConvex(p) !== !!e[2]) continue;
+      } else if (/^(pent|hex)$/.test(type) && !isConvex(p)) continue;
+      if (minSide(p) < 0.22) continue;
+      return p;
+    }
+    return MAKE.square();
+  }
+  function fit(p, W, H, pad) {
+    var xs = p.map(function (q) { return q[0]; }), ys = p.map(function (q) { return q[1]; });
+    var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+    var s = Math.min((W - 2 * pad) / Math.max(x1 - x0, 1e-6), (H - 2 * pad) / Math.max(y1 - y0, 1e-6));
+    var ox = (W - s * (x1 - x0)) / 2 - s * x0, oy = (H - s * (y1 - y0)) / 2 - s * y0;
+    return p.map(function (q) { return [r1(q[0] * s + ox), r1(q[1] * s + oy)]; });
+  }
+
+  /* ---------- ציור ---------- */
+  var VW = 300, VH = 210, TW = 200, TH = 150;
+  function sidePath(a, b, curve) {
+    if (!curve) return 'M' + a[0] + ',' + a[1] + ' L' + b[0] + ',' + b[1];
+    var m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], v = sub(b, a), L = len(v), nx = -v[1] / L, ny = v[0] / L;
+    var k = L * 0.28 * curve;
+    return 'M' + a[0] + ',' + a[1] + ' Q' + r1(m[0] + nx * k) + ',' + r1(m[1] + ny * k) + ' ' + b[0] + ',' + b[1];
+  }
+  // o: { W, H, red:[i], curved:i, curveDir, gap:i, hit:true, cand:[[x,y]], tile:true, tools:true }
+  function polySVG(p, o) {
+    o = o || {};
+    var W = o.W || VW, H = o.H || VH, n = p.length, red = o.red || [];
+    var s = '<svg class="geo' + (o.tile ? ' tile' : '') + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-hidden="true">';
+    var closed = o.gap == null;
+    // מילוי
+    if (closed) {
+      var d = 'M' + p[0][0] + ',' + p[0][1];
+      for (var i = 0; i < n; i++) {
+        var a = p[i], b = p[(i + 1) % n];
+        d += o.curved === i ? sidePath(a, b, o.curveDir || 1).replace(/^M[^ ]+ /, ' ') : ' L' + b[0] + ',' + b[1];
+      }
+      s += '<path class="g-fill" d="' + d + ' Z"/>';
+    }
+    if (o.tools) s += '<g class="g-ext" hidden="hidden">' + extLines(p, red.length ? red : range(n), W, H) + '</g>';
+    for (var k = 0; k < n; k++) {
+      if (o.gap === k) continue;
+      var A = p[k], B = p[(k + 1) % n], isRed = red.indexOf(k) >= 0;
+      s += '<path class="g-sd' + (isRed ? ' red' : '') + '" data-s="' + k + '" d="' + sidePath(A, B, o.curved === k ? (o.curveDir || 1) : 0) + '"/>';
+    }
+    if (o.hit) for (var h = 0; h < n; h++) {
+      if (red.indexOf(h) >= 0) continue;
+      s += '<path class="g-hit" data-s="' + h + '" tabindex="0" role="button" aria-label="צלע ' + (h + 1) + '" d="' + sidePath(p[h], p[(h + 1) % n], 0) + '"/>';
+    }
+    if (o.dots !== false && !o.cand) p.forEach(function (q) { s += '<circle class="g-vx" cx="' + q[0] + '" cy="' + q[1] + '" r="' + (o.tile ? 3 : 4) + '"/>'; });
+    if (o.tools) {
+      s += '<g class="g-ra"></g>';
+      p.forEach(function (q, i) { s += '<circle class="g-vhit" data-v="' + i + '" cx="' + q[0] + '" cy="' + q[1] + '" r="20" hidden="hidden" tabindex="0" role="button" aria-label="קודקוד ' + (i + 1) + '"/>'; });
+    }
+    if (o.cand) o.cand.forEach(function (c, i) {
+      s += '<circle class="g-cand" cx="' + c[0] + '" cy="' + c[1] + '" r="9"/><circle class="g-chit" data-p="' + i + '" cx="' + c[0] + '" cy="' + c[1] + '" r="21" tabindex="0" role="button" aria-label="נקודה ' + (i + 1) + '"/>';
+    });
+    return s + '</svg>';
+  }
+  function extLines(p, sides, W, H) {
+    var out = '';
+    sides.forEach(function (i) {
+      var a = p[i], v = sideVec(p, i), L = len(v), u = [v[0] / L, v[1] / L], T = W + H;
+      out += '<line class="g-exl" x1="' + r1(a[0] - u[0] * T) + '" y1="' + r1(a[1] - u[1] * T) + '" x2="' + r1(a[0] + u[0] * T) + '" y2="' + r1(a[1] + u[1] * T) + '"/>';
+    });
+    return out;
+  }
+  // "זווית ישרה" מונחת בקודקוד v לאורך הצלע שיוצאת ממנו
+  function rightAngleAt(p, v) {
+    var n = p.length, V = p[v], N = p[(v + 1) % n], P = p[(v + n - 1) % n];
+    var u = sub(N, V), L = len(u); u = [u[0] / L, u[1] / L];
+    var w = [-u[1], u[0]];
+    if (dot(w, sub(P, V)) < 0) w = [-w[0], -w[1]];
+    var S = 46;
+    var c1 = [V[0] + u[0] * S, V[1] + u[1] * S], c2 = [c1[0] + w[0] * S, c1[1] + w[1] * S], c3 = [V[0] + w[0] * S, V[1] + w[1] * S];
+    return '<path class="g-raq" d="M' + V.map(r1) + ' L' + c1.map(r1) + ' L' + c2.map(r1) + ' L' + c3.map(r1) + ' Z"/>' +
+      '<path class="g-ram" d="M' + r1(V[0] + u[0] * 12) + ',' + r1(V[1] + u[1] * 12) + ' l' + r1(w[0] * 12) + ',' + r1(w[1] * 12) + ' l' + r1(-u[0] * 12) + ',' + r1(-u[1] * 12) + '"/>';
+  }
+  function tile(type, mode, o) {
+    o = o || {};
+    var p = fit(shape(type, mode || 'any'), TW, TH, 18);
+    return { svg: polySVG(p, { W: TW, H: TH, tile: true, red: o.red, curved: o.curved, gap: o.gap }), pts: p };
+  }
+  // צורה עם צלע עקומה / פתוחה
+  function oddTile(kind) {
+    var base = pick(['rect', 'para', 'trapScal', 'general', 'square']);
+    var p = fit(shape(base, 'any'), TW, TH, 22), side = rnd(0, 3);
+    if (kind === 'curved') return { svg: polySVG(p, { W: TW, H: TH, tile: true, curved: side, curveDir: pick([-1, 1]) }), desc: 'צורה עם צלע עקומה' };
+    return { svg: polySVG(p, { W: TW, H: TH, tile: true, gap: side }), desc: 'צורה פתוחה (חסרה צלע)' };
+  }
+
+  /* ---------- בניית שאלות ---------- */
+  var YES = 'כן', NO = 'לא';
+  function mc(correct, distractors) {
+    var opts = [{ label: correct.label, svg: correct.svg, desc: correct.desc || correct.label, correct: true, mis: '' }];
+    distractors.forEach(function (o) {
+      if (!o) return;
+      for (var i = 0; i < opts.length; i++) if (opts[i].label && o.label && opts[i].label === o.label) return;
+      opts.push({ label: o.label, svg: o.svg, desc: o.desc || o.label, correct: false, mis: o.mis || '' });
+    });
+    return shuffle(opts.slice(0, 4));
+  }
+  function yesNo(isYes, misIfWrong, yesLabel, noLabel) {
+    var y = { label: yesLabel || YES, desc: yesLabel || YES }, n = { label: noLabel || NO, desc: noLabel || NO };
+    var opts = isYes ? [Object.assign({ correct: true, mis: '' }, y), Object.assign({ correct: false, mis: misIfWrong }, n)]
+      : [Object.assign({ correct: false, mis: misIfWrong }, y), Object.assign({ correct: true, mis: '' }, n)];
+    return opts;
+  }
+  function quad(type, mode) { return fit(shape(type, mode), VW, VH, 30); }
+  function adj4(i) { return [(i + 1) % 4, (i + 3) % 4]; }
+  function opp4(i) { return (i + 2) % 4; }
+
+  /* ---------- לוח נקודות ---------- */
+  var GRID = 5, GS = 56, GO = 28;
+  function gxy(c) { return [GO + c[0] * GS, GO + c[1] * GS]; }
+  var DOT_SEGS = [[[0, 0], [0, 3]], [[0, 4], [3, 4]], [[1, 0], [1, 3]], [[0, 1], [0, 3]], [[0, 3], [3, 3]], [[0, 0], [3, 0]]];
+  function dotInfo(pts) {
+    // pts: 4 נקודות שלמות A,B,C,D
+    var keys = {};
+    for (var i = 0; i < 4; i++) { var k = pts[i].join(','); if (keys[k]) return { ok: false, why: 'dup' }; keys[k] = 1; }
+    for (var j = 0; j < 4; j++) if (cross(sideVec(pts, j), sideVec(pts, (j + 1) % 4)) === 0) return { ok: false, why: 'collinear' };
+    if (!isSimple(pts)) return { ok: false, why: 'cross' };
+    var par = 0, perp = 0;
+    for (var a = 0; a < 4; a++) for (var b = a + 1; b < 4; b++) {
+      var u = sideVec(pts, a), v = sideVec(pts, b);
+      if (cross(u, v) === 0) par++;
+      if (dot(u, v) === 0) perp++;
+    }
+    return { ok: true, par: par, perp: perp, convex: isConvex(pts) };
+  }
+  function dotName(pts) {
+    var I = dotInfo(pts);
+    if (!I.ok) return I.why === 'cross' ? 'צורה שהצלעות שלה נחתכות' : I.why === 'collinear' ? 'שלוש נקודות על ישר אחד (לא מרובע)' : 'נקודות כפולות';
+    var L = range(4).map(function (i) { var v = sideVec(pts, i); return v[0] * v[0] + v[1] * v[1]; });
+    var nm;
+    if (!I.convex) nm = 'מרובע קעור';
+    else if (I.par === 2) nm = I.perp === 4 ? (L[0] === L[1] ? 'ריבוע' : 'מלבן') : (L[0] === L[1] ? 'מעוין' : 'מקבילית');
+    else if (I.par === 1) nm = I.perp >= 2 ? 'טרפז ישר-זווית' : 'טרפז';
+    else nm = (L[0] === L[1] && L[2] === L[3]) || (L[1] === L[2] && L[3] === L[0]) ? 'דלתון' : 'מרובע ללא צלעות מקבילות';
+    return nm + ' (' + I.par + ' זוגות מקבילות, ' + I.perp + ' זוגות מאונכות)';
+  }
+  function dotCheck(q, cd) {
+    var pts = [q.seg[0], q.seg[1], cd[0], cd[1]], I = dotInfo(pts), N = q.need, M = q.misMap;
+    if (!I.ok) return { c: false, m: I.why === 'cross' ? M.cross : M.collinear };
+    if (N.convex && !I.convex) return { c: false, m: M.concave || M.other };
+    if (N.par != null && I.par !== N.par) return { c: false, m: I.par > N.par ? M.parMore : M.parLess };
+    if (N.perp != null && I.perp !== N.perp) return { c: false, m: I.perp > N.perp ? M.perpMore : M.perpLess };
+    return { c: true, m: '' };
+  }
+  function dotAll(q) {
+    var out = [];
+    for (var a = 0; a < GRID * GRID; a++) for (var b = 0; b < GRID * GRID; b++) {
+      if (a === b) continue;
+      var C = [a % GRID, Math.floor(a / GRID)], D = [b % GRID, Math.floor(b / GRID)];
+      out.push({ cd: [C, D], r: dotCheck(q, [C, D]) });
+    }
+    return out;
+  }
+  function dotQ(text, need, misMap, expected) {
+    var segs = shuffle(DOT_SEGS);
+    for (var i = 0; i < segs.length; i++) {
+      var q = { kind: 'dotgrid', text: text, seg: segs[i], need: need, misMap: misMap, expected: expected, hint: 'לחצו על שתי נקודות כדי להשלים את המרובע. הקטע האדום הוא אחת הצלעות.' };
+      if (dotAll(q).some(function (x) { return x.r.c; })) return q;
+    }
+    return null;
+  }
+
+  /* ---------- מילון מושגים ("מה זה?") ---------- */
+  var TERMS = {
+    polygon: { name: 'מצולע', def: 'צורה *סגורה* שכל הצלעות שלה *ישרות*, והצלעות לא חוצות זו את זו.' },
+    side: { name: 'צלע', def: 'קטע ישר שהוא חלק מהגבול של המצולע.' },
+    vertex: { name: 'קודקוד', def: 'נקודה שבה *נפגשות שתי צלעות* של המצולע.' },
+    quad: { name: 'מרובע', def: 'מצולע שיש לו *4 צלעות* ו-*4 קודקודים*. הוא יכול להיראות בהרבה צורות.' },
+    adjacent: { name: 'צלעות סמוכות', def: 'שתי צלעות שיש להן *קודקוד משותף*.' },
+    opposite: { name: 'צלעות נגדיות (במרובע)', def: 'שתי צלעות שאין להן *אף קודקוד משותף*.' },
+    parallel: { name: 'ישרים מקבילים', def: 'ישרים שאין להם *אף נקודה משותפת*, גם כשממשיכים אותם עוד ועוד. צלעות הן מקבילות אם הן נמצאות על ישרים מקבילים.' },
+    perp: { name: 'ישרים מאונכים', def: 'ישרים שנחתכים ונוצרת ביניהם *זווית ישרה*. צלעות הן מאונכות אם הן נמצאות על ישרים מאונכים.' },
+    right: { name: 'זווית ישרה', def: 'זווית כמו *פינה של דף*. אפשר לבדוק אותה בדף מקופל פעמיים.' }
+  };
+  var TERM_SVG = {
+    polygon: '<svg viewBox="0 0 120 70"><path class="t-ok" d="M10,60 L30,12 L80,8 L105,40 L70,62 Z"/></svg>',
+    side: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M15,58 L40,12 L95,18 L100,58 Z"/><path class="t-hl" d="M40,12 L95,18"/></svg>',
+    vertex: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M15,58 L40,12 L95,18 L100,58 Z"/><circle class="t-dot" cx="40" cy="12" r="6"/></svg>',
+    quad: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M8,40 L30,10 L50,55 Z" opacity="0"/><path class="t-ln" d="M10,55 L35,8 L60,30 L45,62 Z"/><path class="t-ln" d="M70,20 L112,14 L104,58 L80,44 Z"/></svg>',
+    adjacent: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M15,58 L30,12 L100,12 L90,58 Z"/><path class="t-hl" d="M15,58 L30,12 L100,12"/><circle class="t-dot" cx="30" cy="12" r="5"/></svg>',
+    opposite: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M15,58 L30,12 L100,12 L90,58 Z"/><path class="t-hl" d="M30,12 L100,12"/><path class="t-hl" d="M15,58 L90,58"/></svg>',
+    parallel: '<svg viewBox="0 0 120 70"><path class="t-hl" d="M10,50 L100,22"/><path class="t-hl" d="M20,64 L110,36"/></svg>',
+    perp: '<svg viewBox="0 0 120 70"><path class="t-hl" d="M14,52 L96,11"/><path class="t-hl" d="M40,12 L68,68"/><path class="t-ln" style="fill:none" d="M60,28 L65,38 L55,43"/></svg>',
+    right: '<svg viewBox="0 0 120 70"><path class="t-ln" d="M30,60 L30,10 M30,60 L100,60"/><path class="t-hl" d="M30,46 L44,46 L44,60"/></svg>'
+  };
+
+  /* =========================================================
+     מחוללי שאלות
+     G – יסודות מכיתה ד׳ (מצולעים), A – סמוכות ונגדיות, B – מקבילות, C – מאונכות, D – מרובע לפי תנאים
+     ========================================================= */
+  var QUADS_OK = ['square', 'rect', 'para', 'rhombus', 'trapIso', 'trapRight', 'trapScal', 'kite', 'general'];
+
+  // בחירת כמה צורות: items = [{svg, desc, ok, misPick, misMiss}]
+  function pickQ(text, items, terms, hint) {
+    items = shuffle(items);
+    return { kind: 'pick', text: text, hint: hint || 'אפשר לבחור יותר מצורה אחת.', items: items, terms: terms,
+      expected: items.filter(function (x) { return x.ok; }).map(function (x) { return x.desc; }).join(', ') };
+  }
+  function tapQ(text, pts, red, target, sideMis, missMis, multi, terms, extra) {
+    var q = { kind: 'tapside', text: text, pts: pts, red: red, target: target.slice().sort(), sideMis: sideMis, missMis: missMis, multi: !!multi, terms: terms,
+      hint: multi ? 'לחצו על הצלעות. לחיצה נוספת מבטלת.' : 'לחצו על צלע בציור.' };
+    return Object.assign(q, extra || {});
+  }
+
+  var GEN = {
+    G: {
+      1: [
+        function g1_count_sides() {
+          var t = pick(['tri', 'pent', 'hex', 'general', 'trapScal']), n = MAKE[t]().length;
+          var p = quad(t, 'free'), what = pick(['צלעות', 'קודקודים']);
+          return { kind: 'int', text: 'כמה *' + what + '* יש למצולע?', visual: polySVG(p, {}), target: n,
+            mis: [{ v: n - 1, mis: 'G_MISCOUNT' }, { v: n + 1, mis: 'G_MISCOUNT' }, { v: 2 * n, mis: 'G_SIDES_VERTS' }], expected: String(n), terms: ['side', 'vertex'] };
+        },
+        function g1_is_quad() {
+          var c = pick(['yes_tilt', 'yes_odd', 'curved', 'open', 'tri', 'pent']);
+          var vis, isYes = c.indexOf('yes') === 0, mis, desc;
+          if (c === 'yes_tilt') { vis = polySVG(quad(pick(['square', 'rect', 'trapScal']), 'tilt'), {}); mis = 'G_PROTOTYPE'; desc = 'מרובע מסובב'; }
+          else if (c === 'yes_odd') { vis = polySVG(quad(pick(['general', 'kite', 'trapScal']), 'free'), {}); mis = 'G_PROTOTYPE'; desc = 'מרובע לא שגרתי'; }
+          else if (c === 'curved' || c === 'open') { var o = oddTile(c); vis = o.svg.replace('class="geo tile"', 'class="geo"'); mis = c === 'curved' ? 'G_CURVED' : 'G_OPEN'; desc = o.desc; }
+          else { vis = polySVG(quad(c, 'free'), {}); mis = 'G_MISCOUNT'; desc = NAME[c]; }
+          return { kind: 'mc', text: 'האם הצורה היא *מרובע*?', visual: vis, options: yesNo(isYes, mis, 'כן, זה מרובע', 'לא, זה לא מרובע'),
+            expected: (isYes ? 'כן' : 'לא') + ' (' + desc + ')', terms: ['polygon', 'quad'] };
+        },
+        function g1_pick_one() {
+          var good = tile(pick(QUADS_OK), 'tilt'), cu = oddTile('curved'), op = oddTile('open');
+          var other = pick(['tri', 'pent']), ot = tile(other, 'free');
+          return { kind: 'mc', svgOptions: true, text: 'איזו צורה היא *מרובע*?', visual: '', terms: ['polygon', 'quad'],
+            options: mc({ svg: good.svg, desc: 'מרובע' }, [{ svg: cu.svg, desc: cu.desc, mis: 'G_CURVED', label: 'c' }, { svg: op.svg, desc: op.desc, mis: 'G_OPEN', label: 'o' }, { svg: ot.svg, desc: NAME[other], mis: 'G_MISCOUNT', label: 't' }]), expected: 'המרובע' };
+        }
+      ],
+      2: [
+        function g2_pick_all() {
+          var items = [], q1 = pick(['square', 'rect']), q2 = pick(['general', 'kite', 'trapScal', 'para']);
+          var a = tile(q1, 'tilt'), b = tile(q2, 'free');
+          items.push({ svg: a.svg, desc: NAME[q1] + ' מסובב', ok: true, misMiss: 'G_PROTOTYPE' });
+          items.push({ svg: b.svg, desc: NAME[q2], ok: true, misMiss: 'G_PROTOTYPE' });
+          if (Math.random() < 0.5) { var c3 = pick(['trapIso', 'rhombus']), c = tile(c3, 'free'); items.push({ svg: c.svg, desc: NAME[c3], ok: true, misMiss: 'G_PROTOTYPE' }); }
+          var cu = oddTile('curved'), op = oddTile('open'), x = pick(['tri', 'pent', 'hex']), xt = tile(x, 'free');
+          items.push({ svg: cu.svg, desc: cu.desc, ok: false, misPick: 'G_CURVED' });
+          items.push({ svg: op.svg, desc: op.desc, ok: false, misPick: 'G_OPEN' });
+          items.push({ svg: xt.svg, desc: NAME[x], ok: false, misPick: 'G_MISCOUNT' });
+          return pickQ('סמנו את *כל המרובעים*.', items, ['polygon', 'quad']);
+        },
+        function g2_concave_count() {
+          var t = pick(['concPent', 'concHex', 'dart', 'arrow']), n = MAKE[t]().length, p = quad(t, 'free'), what = pick(['קודקודים', 'צלעות']);
+          return { kind: 'int', text: 'כמה *' + what + '* יש למצולע?', visual: polySVG(p, {}), target: n,
+            mis: [{ v: n - 1, mis: 'G_CONCAVE_VERTEX' }, { v: n - 2, mis: 'G_CONCAVE_VERTEX' }, { v: n + 1, mis: 'G_MISCOUNT' }], expected: String(n), terms: ['side', 'vertex'] };
+        },
+        function g2_tap_vertices() {
+          var t = pick(['concPent', 'dart', 'general', 'trapScal']), p = quad(t, 'free'), n = p.length, cand = [], meta = [];
+          var area = 0; for (var k = 0; k < n; k++) area += cross(p[k], p[(k + 1) % n]);
+          p.forEach(function (v, i) {
+            var isRef = cross(sub(p[i], p[(i + n - 1) % n]), sub(p[(i + 1) % n], p[i])) * area < 0;
+            cand.push(v); meta.push({ ok: true, misMiss: isRef ? 'G_CONCAVE_VERTEX' : 'G_VERTEX_MEANING', desc: isRef ? 'הקודקוד הפנימי' : 'קודקוד' });
+          });
+          var si = rnd(0, n - 1), A = p[si], B = p[(si + 1) % n], f = rndf(0.4, 0.6);
+          cand.push([r1(A[0] + (B[0] - A[0]) * f), r1(A[1] + (B[1] - A[1]) * f)]); meta.push({ ok: false, misPick: 'G_COLLINEAR', desc: 'נקודה באמצע צלע' });
+          var cx = 0, cy = 0; p.forEach(function (q) { cx += q[0]; cy += q[1]; }); cx /= n; cy /= n;
+          var inside = [r1(cx), r1(cy)];
+          if (!isConvex(p)) inside = [r1((p[0][0] + p[1][0] + p[2][0]) / 3), r1((p[0][1] + p[1][1] + p[2][1]) / 3)];
+          cand.push(inside); meta.push({ ok: false, misPick: 'G_VERTEX_MEANING', desc: 'נקודה בתוך הצורה' });
+          var order = shuffle(range(cand.length));
+          return { kind: 'tappts', text: 'לחצו על *כל הקודקודים* של המצולע.', hint: 'לחיצה נוספת מבטלת סימון.', visual: polySVG(p, { cand: order.map(function (i) { return cand[i]; }), dots: false }),
+            items: order.map(function (i) { return meta[i]; }), expected: n + ' קודקודים', terms: ['vertex'] };
+        },
+        function g2_sides_from_vertices() {
+          var n = rnd(5, 9), names = { 5: 'מחומש', 6: 'משושה', 7: 'מצולע עם 7 קודקודים', 8: 'מתומן', 9: 'מצולע עם 9 קודקודים' };
+          var askV = Math.random() < 0.5;
+          return { kind: 'int', text: askV ? 'למצולע יש ' + n + ' *צלעות*. כמה *קודקודים* יש לו?' : 'למצולע יש ' + n + ' *קודקודים*. כמה *צלעות* יש לו?', visual: '', target: n,
+            mis: [{ v: n - 1, mis: 'G_SIDES_VERTS' }, { v: n + 1, mis: 'G_SIDES_VERTS' }, { v: 2 * n, mis: 'G_SIDES_VERTS' }], expected: String(n), terms: ['side', 'vertex', 'polygon'] };
+        }
+      ],
+      3: [
+        function g3_pick_hard() {
+          var items = [];
+          var d = tile('dart', 'free'); items.push({ svg: d.svg, desc: 'מרובע קעור', ok: true, misMiss: 'G_CONCAVE' });
+          var g = pick(['general', 'kite', 'trapScal']), gt = tile(g, 'free'); items.push({ svg: gt.svg, desc: NAME[g], ok: true, misMiss: 'G_PROTOTYPE' });
+          var bt = fit(shape('bowtie', 'free'), TW, TH, 20); items.push({ svg: polySVG(bt, { W: TW, H: TH, tile: true }), desc: 'צורת "פרפר" (צלעות נחתכות)', ok: false, misPick: 'G_CROSS' });
+          var cp = tile('concPent', 'free'); items.push({ svg: cp.svg, desc: 'מחומש קעור', ok: false, misPick: 'G_MISCOUNT' });
+          var cu = oddTile('curved'); items.push({ svg: cu.svg, desc: cu.desc, ok: false, misPick: 'G_CURVED' });
+          if (Math.random() < 0.5) { var r = tile(pick(['rect', 'para']), 'tilt'); items.push({ svg: r.svg, desc: 'מרובע מסובב', ok: true, misMiss: 'G_PROTOTYPE' }); }
+          return pickQ('סמנו את *כל המרובעים*.', items, ['polygon', 'quad']);
+        },
+        function g3_true_statement() {
+          var c = { label: 'לכל מרובע יש 4 צלעות ו-4 קודקודים', mis: '' };
+          var d = [
+            { label: 'צורה עם 4 צלעות, שאחת מהן עקומה, היא מרובע', mis: 'G_CURVED' },
+            { label: 'מרובע עם "שקע" פנימה הוא לא מרובע', mis: 'G_CONCAVE' },
+            { label: 'למרובע חייבות להיות זוויות ישרות', mis: 'G_PROTOTYPE' },
+            { label: 'למחומש יש 5 צלעות ו-6 קודקודים', mis: 'G_SIDES_VERTS' }
+          ];
+          return { kind: 'mc', text: 'איזה משפט *נכון*?', visual: '', options: mc(c, shuffle(d).slice(0, 3)), expected: c.label, terms: ['quad', 'polygon'], one: true };
+        },
+        function g3_count_hard() {
+          var t = pick(['arrow', 'concHex']), n = MAKE[t]().length, p = quad(t, 'free');
+          return { kind: 'int', text: 'כמה *קודקודים* יש למצולע?', visual: polySVG(p, {}), target: n,
+            mis: [{ v: n - 1, mis: 'G_CONCAVE_VERTEX' }, { v: n - 2, mis: 'G_CONCAVE_VERTEX' }, { v: n + 1, mis: 'G_MISCOUNT' }], expected: String(n), terms: ['vertex'] };
+        },
+        function g3_dot_no_right() {
+          return dotQ('השלימו *מרובע* שאין בו *אף זווית ישרה*.', { perp: 0 },
+            { cross: 'G_CROSS', collinear: 'G_COLLINEAR', perpMore: 'G_PROTOTYPE', perpLess: 'G_OTHER', parMore: 'G_OTHER', parLess: 'G_OTHER' }, 'מרובע בלי זוויות ישרות');
+        }
+      ]
+    },
+
+    A: {
+      1: [
+        function a1_tap_opposite() {
+          var p = quad(pick(['rect', 'para', 'trapScal', 'general']), 'any'), r = rnd(0, 3), o = opp4(r), sm = {};
+          adj4(r).forEach(function (j) { sm[j] = 'A_SWAP_TERMS'; });
+          return tapQ('לחצו על הצלע *הנגדית* לצלע האדומה.', p, [r], [o], sm, 'A_OTHER', false, ['opposite', 'adjacent'], { expected: 'הצלע שמול האדומה' });
+        },
+        function a1_tap_adjacent() {
+          var p = quad(pick(['rect', 'para', 'trapScal', 'general', 'kite']), 'any'), r = rnd(0, 3), sm = {};
+          sm[opp4(r)] = 'A_SWAP_TERMS';
+          var q = tapQ('לחצו על צלע אחת *סמוכה* לצלע האדומה.', p, [r], adj4(r), sm, 'A_OTHER', false, ['adjacent', 'opposite'], { expected: 'אחת משתי הצלעות שנוגעות באדומה' });
+          q.anyOf = true;
+          return q;
+        },
+        function a1_def() {
+          var askAdj = Math.random() < 0.5;
+          var c = askAdj ? { label: 'יש להן קודקוד משותף' } : { label: 'אין להן קודקוד משותף' };
+          var d = [askAdj ? { label: 'אין להן קודקוד משותף', mis: 'A_SWAP_TERMS' } : { label: 'יש להן קודקוד משותף', mis: 'A_SWAP_TERMS' },
+            { label: 'הן שוות באורכן', mis: 'A_LENGTH' }, askAdj ? { label: 'הן קרובות זו לזו בציור', mis: 'A_VISUAL_NEAR' } : { label: 'הן רחוקות זו מזו בציור', mis: 'A_VISUAL_NEAR' }];
+          var p = quad('trapScal', 'proto');
+          return { kind: 'mc', text: (askAdj ? '*צלעות סמוכות* במרובע הן צלעות ש...' : '*צלעות נגדיות* במרובע הן צלעות ש...'), visual: '', options: mc(c, d), expected: c.label, terms: [], one: true, noDefs: true };
+        }
+      ],
+      2: [
+        function a2_tap_both_adjacent() {
+          var p = quad(pick(['para', 'trapScal', 'general', 'kite', 'trapRight']), 'free'), r = rnd(0, 3), sm = {};
+          sm[opp4(r)] = 'A_SWAP_TERMS';
+          return tapQ('לחצו על *כל* הצלעות ה*סמוכות* לצלע האדומה.', p, [r], adj4(r), sm, 'A_ONE_ADJ', true, ['adjacent'], { expected: 'שתי הצלעות שנוגעות באדומה' });
+        },
+        function a2_count_pairs() {
+          var askOpp = Math.random() < 0.5, p = quad(pick(['general', 'trapScal', 'para']), 'free');
+          return askOpp
+            ? { kind: 'int', text: 'כמה *זוגות של צלעות נגדיות* יש במרובע?', visual: polySVG(p, {}), target: 2, mis: [{ v: 4, mis: 'A_COUNT_PAIRS' }, { v: 1, mis: 'A_COUNT_PAIRS' }, { v: 3, mis: 'A_COUNT_PAIRS' }], expected: '2', terms: ['opposite'] }
+            : { kind: 'int', text: 'כמה *זוגות של צלעות סמוכות* יש במרובע?', visual: polySVG(p, {}), target: 4, mis: [{ v: 2, mis: 'A_COUNT_PAIRS' }, { v: 8, mis: 'A_COUNT_PAIRS' }, { v: 6, mis: 'A_ALL_ADJ' }], expected: '4', terms: ['adjacent'] };
+        },
+        function a2_who_adjacent() {
+          // מרובע ארוך וצר: הצלעות הנגדיות הארוכות קרובות במרחק, הסמוכות "רחוקות"
+          var askAdj = Math.random() < 0.5;
+          function thin() { return fit(rotate([[0, 0], [rndf(2.6, 3), rndf(-0.1, 0.1)], [rndf(2.5, 2.9), rndf(0.45, 0.6)], [rndf(0.1, 0.3), rndf(0.45, 0.6)]], rndf(-25, 25) * DEG), TW, TH, 18); }
+          var p1 = thin(), p2 = thin(), p3 = fit(shape('general', 'free'), TW, TH, 18);
+          var adjOpt = { svg: polySVG(p1, { W: TW, H: TH, tile: true, red: [0, 1] }), desc: 'צלעות אדומות סמוכות' };
+          var oppOpt = { svg: polySVG(p2, { W: TW, H: TH, tile: true, red: [0, 2] }), desc: 'צלעות אדומות נגדיות (קרובות בציור)' };
+          var adj2 = { svg: polySVG(p3, { W: TW, H: TH, tile: true, red: [1, 2] }), desc: 'צלעות אדומות סמוכות' };
+          return askAdj
+            ? { kind: 'mc', svgOptions: true, text: 'באיזה מרובע הצלעות האדומות הן *סמוכות*?', visual: '', options: mc(adjOpt, [Object.assign({ mis: 'A_VISUAL_NEAR', label: 'x' }, oppOpt)]), expected: 'הצלעות עם הקודקוד המשותף', terms: ['adjacent', 'opposite'] }
+            : { kind: 'mc', svgOptions: true, text: 'באיזה מרובע הצלעות האדומות הן *נגדיות*?', visual: '', options: mc(oppOpt, [Object.assign({ mis: 'A_SWAP_TERMS', label: 'x' }, adj2)]), expected: 'הצלעות בלי קודקוד משותף', terms: ['adjacent', 'opposite'] };
+        }
+      ],
+      3: [
+        function a3_concave_opposite() {
+          var p = quad('dart', 'free'), r = rnd(0, 3), sm = {};
+          adj4(r).forEach(function (j) { sm[j] = 'A_SWAP_TERMS'; });
+          return tapQ('לחצו על הצלע *הנגדית* לצלע האדומה.', p, [r], [opp4(r)], sm, 'A_OTHER', false, ['opposite'], { expected: 'הצלע שאין לה קודקוד משותף עם האדומה' });
+        },
+        function a3_polygon_adjacent() {
+          var t = pick(['pent', 'hex']), p = quad(t, 'free'), n = p.length, r = rnd(0, n - 1), tg = [(r + 1) % n, (r + n - 1) % n], sm = {};
+          for (var j = 0; j < n; j++) if (j !== r && tg.indexOf(j) < 0) sm[j] = 'A_ALL_ADJ';
+          return tapQ('ב' + NAME[t] + ' שלפניכם, לחצו על *כל* הצלעות ה*סמוכות* לצלע האדומה.', p, [r], tg, sm, 'A_ONE_ADJ', true, ['adjacent'], { expected: '2 צלעות' });
+        },
+        function a3_statement() {
+          var c = { label: '2 צלעות סמוכות וצלע נגדית אחת' };
+          return { kind: 'mc', text: 'במרובע, לכל צלע יש...', visual: '', options: mc(c, [{ label: 'צלע סמוכה אחת ו-2 צלעות נגדיות', mis: 'A_SWAP_TERMS' }, { label: '3 צלעות סמוכות', mis: 'A_ALL_ADJ' }, { label: 'צלע סמוכה אחת וצלע נגדית אחת', mis: 'A_ONE_ADJ' }]), expected: c.label, terms: ['adjacent', 'opposite'], one: true };
+        }
+      ]
+    },
+
+    B: {
+      1: [
+        function b1_yesno() {
+          var c = pick(['trapBase', 'paraTilt', 'trapLegs', 'genOpp']), p, red, isYes, mis, desc;
+          if (c === 'trapBase') { p = quad(pick(['trapIso', 'trapScal']), 'any'); red = [0, 2]; isYes = true; mis = 'B_LENGTH'; desc = 'בסיסי טרפז (אורך שונה)'; }
+          else if (c === 'paraTilt') { p = quad(pick(['para', 'rect', 'rhombus']), 'tilt'); red = pick([[0, 2], [1, 3]]); isYes = true; mis = 'B_ORIENT'; desc = 'צלעות מקבילות מסובבות'; }
+          else if (c === 'trapLegs') { p = quad(pick(['trapIso', 'trapScal']), 'proto'); red = [1, 3]; isYes = false; mis = 'B_NO_EXTEND'; desc = 'שוקי טרפז'; }
+          else { p = quad('general', 'any'); red = pick([[0, 2], [1, 3]]); isYes = false; mis = 'B_NO_EXTEND'; desc = 'צלעות לא מקבילות'; }
+          return { kind: 'mc', text: 'האם הצלעות האדומות *מקבילות*?', pts: p, red: red, visual: polySVG(p, { red: red, tools: true }), tools: ['extend'],
+            options: yesNo(isYes, mis, 'כן, מקבילות', 'לא, לא מקבילות'), expected: (isYes ? 'כן' : 'לא') + ' (' + desc + ')', terms: ['parallel'] };
+        },
+        function b1_def() {
+          var c = { label: 'ישרים שאין להם אף נקודה משותפת, גם כשממשיכים אותם' };
+          return { kind: 'mc', text: '*ישרים מקבילים* הם...', visual: '', options: mc(c, [{ label: 'ישרים שנחתכים בזווית ישרה', mis: 'B_PERP_CONFUSE' }, { label: 'ישרים שאורכם שווה', mis: 'B_LENGTH' }, { label: 'ישרים שעומדים ישר, למעלה ולמטה', mis: 'B_ORIENT' }]), expected: c.label, terms: [], one: true, noDefs: true };
+        },
+        function b1_tap_parallel() {
+          var t = pick(['trapIso', 'trapScal', 'trapRight', 'para']), p = quad(t, 'any'), r = t === 'para' ? rnd(0, 3) : pick([0, 2]), sm = {};
+          adj4(r).forEach(function (j) { sm[j] = 'B_ADJ'; });
+          return tapQ('לחצו על הצלע ה*מקבילה* לצלע האדומה.', p, [r], [opp4(r)], sm, 'B_OTHER', false, ['parallel'], { tools: ['extend'], expected: 'הצלע שמול האדומה' });
+        }
+      ],
+      2: [
+        function b2_pick_parallel() {
+          var items = [];
+          var a = pick(['para', 'rect', 'rhombus']), at = tile(a, 'tilt', { red: [0, 2] }); items.push({ svg: at.svg, desc: NAME[a] + ' מסובב', ok: true, misMiss: 'B_ORIENT' });
+          var b = pick(['trapIso', 'trapScal']), bt = tile(b, 'any', { red: [0, 2] }); items.push({ svg: bt.svg, desc: 'בסיסי טרפז', ok: true, misMiss: 'B_LENGTH' });
+          var c = pick(['trapIso', 'trapScal']), ct = tile(c, 'proto', { red: [1, 3] }); items.push({ svg: ct.svg, desc: 'שוקי טרפז', ok: false, misPick: 'B_NO_EXTEND' });
+          var d = tile('kite', 'any', { red: [0, 1] }); items.push({ svg: d.svg, desc: 'צלעות סמוכות בדלתון', ok: false, misPick: 'B_ADJ' });
+          if (Math.random() < 0.5) { var e = tile('general', 'any', { red: [0, 2] }); items.push({ svg: e.svg, desc: 'צלעות נגדיות לא מקבילות', ok: false, misPick: 'B_NO_EXTEND' }); }
+          return pickQ('סמנו את כל המרובעים שבהם *הצלעות האדומות מקבילות*.', items, ['parallel']);
+        },
+        function b2_count_pairs() {
+          var t = pick(['para', 'rhombus', 'rect', 'trapIso', 'trapScal', 'kite', 'general']), mode = /para|rhombus|rect/.test(t) ? 'tilt' : 'any';
+          var p = quad(t, mode), n = EXPECT[t][0];
+          var m = { 0: t === 'kite' ? 'B_LENGTH' : 'B_NO_EXTEND', 1: n === 2 ? 'B_ORIENT' : 'B_NO_EXTEND', 2: n === 1 ? 'B_NO_EXTEND' : 'B_LENGTH' };
+          var opts = [0, 1, 2].map(function (k) { return { label: String(k), desc: String(k), correct: k === n, mis: k === n ? '' : m[k] }; });
+          return { kind: 'mc', text: 'כמה *זוגות של צלעות מקבילות* יש במרובע?', pts: p, red: [], visual: polySVG(p, { tools: true }), tools: ['extend'], options: opts, expected: n + ' (' + NAME[t] + ')', terms: ['parallel'] };
+        },
+        function b2_maya() {
+          var p = quad(pick(['trapIso', 'trapScal']), 'proto'), red = [1, 3];
+          var vis = polySVG(p, { red: red, tools: true }).replace('<g class="g-ext" hidden="hidden">', '<g class="g-ext">');
+          var c = { label: 'הצלעות האדומות אינן מקבילות' };
+          return { kind: 'mc', text: 'מאיה האריכה את הצלעות האדומות (הקווים המקווקווים). מה אפשר להסיק?', visual: vis, options: mc(c, [{ label: 'הן מקבילות, כי בתוך הצורה הן לא נפגשות', mis: 'B_NO_EXTEND' }, { label: 'הן מאונכות', mis: 'B_PERP_CONFUSE' }, { label: 'הן מקבילות, כי הן באותו אורך', mis: 'B_LENGTH' }]), expected: c.label, terms: ['parallel'], one: true };
+        }
+      ],
+      3: [
+        function b3_pick_two_pairs() {
+          var items = [];
+          ['para', 'rhombus', 'rect'].forEach(function (t, i) { if (i < 2 || Math.random() < 0.5) { var x = tile(t, 'tilt'); items.push({ svg: x.svg, desc: NAME[t] + ' מסובב', ok: true, misMiss: 'B_ORIENT' }); } });
+          var tr = pick(['trapIso', 'trapScal']), trt = tile(tr, 'any'); items.push({ svg: trt.svg, desc: NAME[tr], ok: false, misPick: 'B_NO_EXTEND' });
+          var k = tile('kite', 'any'); items.push({ svg: k.svg, desc: 'דלתון', ok: false, misPick: 'B_LENGTH' });
+          var g = tile('general', 'any'); items.push({ svg: g.svg, desc: 'מרובע ללא צלעות מקבילות', ok: false, misPick: 'B_NO_EXTEND' });
+          return pickQ('סמנו את כל המרובעים שיש בהם *שני זוגות* של צלעות מקבילות.', items, ['parallel']);
+        },
+        function b3_tap_parallel_tilted() {
+          var t = pick(['para', 'rhombus', 'trapScal', 'trapIso']), p = quad(t, 'free'), r = /trap/.test(t) ? pick([0, 2]) : rnd(0, 3), sm = {};
+          adj4(r).forEach(function (j) { sm[j] = 'B_ADJ'; });
+          return tapQ('לחצו על הצלע ה*מקבילה* לצלע האדומה.', p, [r], [opp4(r)], sm, 'B_ORIENT', false, ['parallel'], { expected: 'הצלע שמול האדומה' });
+        },
+        function b3_dot_one_pair() {
+          return dotQ('השלימו מרובע שיש בו *רק זוג אחד* של צלעות מקבילות.', { par: 1 },
+            { cross: 'B_OTHER', collinear: 'B_OTHER', parMore: 'B_ATLEAST', parLess: 'B_NO_EXTEND', perpMore: 'B_OTHER', perpLess: 'B_OTHER' }, 'טרפז (זוג אחד של מקבילות)');
+        }
+      ]
+    },
+
+    C: {
+      1: [
+        function c1_yesno() {
+          var c = pick(['rectTilt', 'trapRight', 'paraNear', 'rhombus']), p, red, isYes, mis, desc;
+          if (c === 'rectTilt') { p = quad(pick(['rect', 'square']), 'tilt'); var r = rnd(0, 3); red = [r, (r + 1) % 4]; isYes = true; mis = 'C_ORIENT'; desc = 'פינה של מלבן מסובב'; }
+          else if (c === 'trapRight') { p = quad('trapRight', 'tilt'); red = pick([[3, 0], [2, 3]]); isYes = true; mis = 'C_ORIENT'; desc = 'זווית ישרה בטרפז'; }
+          else if (c === 'paraNear') { p = quad('para', 'proto'); var r2 = rnd(0, 3); red = [r2, (r2 + 1) % 4]; isYes = false; mis = 'C_ROUGH'; desc = 'פינה של מקבילית'; }
+          else { p = quad('rhombus', 'any'); var r3 = rnd(0, 3); red = [r3, (r3 + 1) % 4]; isYes = false; mis = 'C_ROUGH'; desc = 'פינה של מעוין'; }
+          return { kind: 'mc', text: 'האם הצלעות האדומות *מאונכות* זו לזו?', pts: p, red: red, visual: polySVG(p, { red: red, tools: true }), tools: ['right'],
+            options: yesNo(isYes, mis, 'כן, מאונכות', 'לא, לא מאונכות'), expected: (isYes ? 'כן' : 'לא') + ' (' + desc + ')', terms: ['perp', 'right'] };
+        },
+        function c1_def() {
+          var c = { label: 'ישרים שנחתכים ויוצרים זווית ישרה' };
+          return { kind: 'mc', text: '*ישרים מאונכים* הם...', visual: '', options: mc(c, [{ label: 'ישרים שלא נפגשים אף פעם', mis: 'C_PAR_CONFUSE' }, { label: 'ישר אחד עומד וישר אחד שוכב', mis: 'C_ORIENT' }, { label: 'כל שני ישרים שנחתכים', mis: 'C_ANY_CROSS' }]), expected: c.label, terms: [], one: true, noDefs: true };
+        },
+        function c1_pick_right() {
+          var r = rnd(0, 3);
+          var good = tile(pick(['rect', 'square']), 'tilt', { red: [r, (r + 1) % 4] });
+          var par = tile('para', 'proto', { red: [0, 1] });
+          var opp = tile('rect', 'proto', { red: [0, 2] });
+          var rh = tile('rhombus', 'tilt', { red: [1, 2] });
+          return { kind: 'mc', svgOptions: true, text: 'באיזה מרובע הצלעות האדומות *מאונכות*?', visual: '', terms: ['perp', 'right'],
+            options: mc({ svg: good.svg, desc: 'פינה של מלבן מסובב' }, [{ svg: par.svg, desc: 'פינה של מקבילית (צלע אחת אופקית)', mis: 'C_ORIENT_H', label: 'a' }, { svg: opp.svg, desc: 'צלעות נגדיות מקבילות', mis: 'C_PAR_CONFUSE', label: 'b' }, { svg: rh.svg, desc: 'פינה של מעוין', mis: 'C_ROUGH', label: 'c' }]), expected: 'פינה של מלבן מסובב' };
+        }
+      ],
+      2: [
+        function c2_pick_all() {
+          var items = [], r = rnd(0, 3);
+          var a = tile('rect', 'tilt', { red: [r, (r + 1) % 4] }); items.push({ svg: a.svg, desc: 'פינה של מלבן מסובב', ok: true, misMiss: 'C_ORIENT' });
+          var b = tile('trapRight', 'any', { red: [3, 0] }); items.push({ svg: b.svg, desc: 'זווית ישרה בטרפז', ok: true, misMiss: 'C_PROTO' });
+          var c = tile('para', 'proto', { red: [0, 1] }); items.push({ svg: c.svg, desc: 'פינה של מקבילית', ok: false, misPick: 'C_ROUGH' });
+          var d = tile(pick(['para', 'trapIso']), 'any', { red: [0, 2] }); items.push({ svg: d.svg, desc: 'צלעות נגדיות', ok: false, misPick: 'C_PAR_CONFUSE' });
+          if (Math.random() < 0.5) { var e = tile('kite', 'any', { red: [0, 1] }); items.push({ svg: e.svg, desc: 'פינה של דלתון', ok: false, misPick: 'C_ROUGH' }); }
+          return pickQ('סמנו את כל המרובעים שבהם *הצלעות האדומות מאונכות*.', items, ['perp', 'right']);
+        },
+        function c2_count_right() {
+          var t = pick(['rect', 'square', 'trapRight', 'para', 'trapIso']), mode = pick(['tilt', 'any']), p = quad(t, mode), n = EXPECT[t][1];
+          var mk = function (k) {
+            if (k === n) return '';
+            if (n === 4 && k === 2) return 'C_PAIRS';
+            if (n === 4 && k === 0) return 'C_ORIENT';
+            if (n === 2 && k === 4) return 'C_ROUGH';
+            if (n === 0) return 'C_ROUGH';
+            return 'C_PAIRS';
+          };
+          var opts = [0, 1, 2, 4].map(function (k) { return { label: String(k), desc: String(k), correct: k === n, mis: mk(k) }; });
+          return { kind: 'mc', text: 'כמה *זוגות של צלעות מאונכות* יש במרובע?', pts: p, red: [], visual: polySVG(p, { tools: true }), tools: ['right'], options: opts, expected: n + ' (' + NAME[t] + ')', terms: ['perp', 'right'] };
+        },
+        function c2_tap_perp() {
+          var t = pick(['trapRight', 'rect']), p = quad(t, 'tilt'), r, tg, sm = {};
+          if (t === 'rect') { r = rnd(0, 3); tg = adj4(r); sm[opp4(r)] = 'C_PAR_CONFUSE'; }
+          else { r = pick([0, 2]); tg = [3]; sm[1] = 'C_ROUGH'; sm[opp4(r)] = 'C_PAR_CONFUSE'; }
+          var q = tapQ('לחצו על צלע ה*מאונכת* לצלע האדומה.', p, [r], tg, sm, 'C_OTHER', false, ['perp', 'right'], { tools: ['right'], expected: 'צלע שיוצרת זווית ישרה עם האדומה' });
+          q.anyOf = tg.length > 1;
+          return q;
+        }
+      ],
+      3: [
+        function c3_dot_two_perp() {
+          return dotQ('השלימו מרובע שיש בו *רק שני זוגות* של צלעות מאונכות.', { perp: 2 },
+            { cross: 'C_OTHER', collinear: 'C_OTHER', perpMore: 'C_ATLEAST', perpLess: 'C_ROUGH', parMore: 'C_OTHER', parLess: 'C_OTHER' }, 'למשל טרפז ישר-זווית');
+        },
+        function c3_pick_tilted() {
+          var items = [];
+          var a = tile(pick(['rect', 'square']), 'free'); items.push({ svg: a.svg, desc: 'מלבן/ריבוע מסובב', ok: true, misMiss: 'C_ORIENT' });
+          var b = tile('trapRight', 'free'); items.push({ svg: b.svg, desc: 'טרפז ישר-זווית', ok: true, misMiss: 'C_PROTO' });
+          var c = tile('para', 'proto'); items.push({ svg: c.svg, desc: 'מקבילית', ok: false, misPick: 'C_ROUGH' });
+          var d = tile('rhombus', 'proto'); items.push({ svg: d.svg, desc: 'מעוין', ok: false, misPick: 'C_ROUGH' });
+          var e = tile('trapIso', 'proto'); items.push({ svg: e.svg, desc: 'טרפז שווה-שוקיים', ok: false, misPick: 'C_ROUGH' });
+          return pickQ('סמנו את כל המרובעים שיש בהם *צלעות מאונכות*.', items, ['perp', 'right']);
+        },
+        function c3_statement() {
+          var c = { label: 'מאונכות' };
+          return { kind: 'mc', text: 'במלבן, כל שתי צלעות *סמוכות* הן...', visual: '', options: mc(c, [{ label: 'מקבילות', mis: 'C_PAR_CONFUSE' }, { label: 'שוות באורכן', mis: 'C_OTHER' }, { label: 'נגדיות', mis: 'C_TERMS' }]), expected: c.label, terms: ['perp', 'adjacent'] };
+        }
+      ]
+    },
+
+    D: {
+      1: [
+        function d1_dot_two_pairs() {
+          return dotQ('השלימו מרובע שיש בו *שני זוגות* של צלעות מקבילות.', { par: 2 },
+            { cross: 'D_INVALID', collinear: 'D_INVALID', parMore: 'D_OTHER', parLess: 'D_PAR_COUNT', perpMore: 'D_OTHER', perpLess: 'D_OTHER' }, 'מקבילית, מלבן, ריבוע או מעוין');
+        },
+        function d1_pick_one_pair() {
+          var tr = pick(['trapIso', 'trapScal', 'trapRight']), a = tile(tr, 'any'), b = tile(pick(['para', 'rect']), 'tilt'), c = tile('kite', 'any'), d = tile('general', 'any');
+          return { kind: 'mc', svgOptions: true, text: 'באיזה מרובע יש *בדיוק זוג אחד* של צלעות מקבילות?', visual: '', terms: ['parallel'],
+            options: mc({ svg: a.svg, desc: NAME[tr] }, [{ svg: b.svg, desc: 'מקבילית/מלבן', mis: 'D_ATLEAST', label: 'a' }, { svg: c.svg, desc: 'דלתון', mis: 'D_PAR_COUNT', label: 'b' }, { svg: d.svg, desc: 'מרובע ללא מקבילות', mis: 'D_PAR_COUNT', label: 'c' }]), expected: NAME[tr] };
+        },
+        function d1_describe() {
+          var t = pick(['para', 'rect', 'trapScal', 'trapRight']), p = quad(t, 'tilt'), e = EXPECT[t];
+          var good = { 'para': 'שני זוגות של צלעות מקבילות, ואין צלעות מאונכות', 'rect': 'שני זוגות של צלעות מקבילות, וכל שתי צלעות סמוכות מאונכות',
+            'trapScal': 'זוג אחד של צלעות מקבילות, ואין צלעות מאונכות', 'trapRight': 'זוג אחד של צלעות מקבילות, ושני זוגות של צלעות מאונכות' }[t];
+          var all = [
+            { label: 'שני זוגות של צלעות מקבילות, ואין צלעות מאונכות', p: 2, r: 0 },
+            { label: 'שני זוגות של צלעות מקבילות, וכל שתי צלעות סמוכות מאונכות', p: 2, r: 4 },
+            { label: 'זוג אחד של צלעות מקבילות, ואין צלעות מאונכות', p: 1, r: 0 },
+            { label: 'זוג אחד של צלעות מקבילות, ושני זוגות של צלעות מאונכות', p: 1, r: 2 }
+          ];
+          var d = all.filter(function (x) { return x.label !== good; }).map(function (x) { return { label: x.label, mis: x.p !== e[0] ? 'D_PAR_COUNT' : 'D_PERP_COUNT' }; });
+          return { kind: 'mc', text: 'מה נכון לגבי המרובע?', pts: p, red: [], visual: polySVG(p, { tools: true }), tools: ['extend', 'right'], options: mc({ label: good }, d), expected: good, terms: ['parallel', 'perp'], one: true };
+        }
+      ],
+      2: [
+        function d2_dot_one_pair() {
+          return dotQ('השלימו מרובע שיש בו *רק זוג אחד* של צלעות מקבילות.', { par: 1 },
+            { cross: 'D_INVALID', collinear: 'D_INVALID', parMore: 'D_ATLEAST', parLess: 'D_PAR_COUNT', perpMore: 'D_OTHER', perpLess: 'D_OTHER' }, 'טרפז');
+        },
+        function d2_pick_both() {
+          var items = [];
+          var a = tile(pick(['rect', 'square']), 'tilt'); items.push({ svg: a.svg, desc: 'מלבן/ריבוע מסובב', ok: true, misMiss: 'D_PROTO' });
+          var b = tile('trapRight', 'any'); items.push({ svg: b.svg, desc: 'טרפז ישר-זווית', ok: true, misMiss: 'D_PROTO' });
+          var c = tile('para', 'any'); items.push({ svg: c.svg, desc: 'מקבילית', ok: false, misPick: 'D_PERP_COUNT' });
+          var d = tile('trapIso', 'any'); items.push({ svg: d.svg, desc: 'טרפז שווה-שוקיים', ok: false, misPick: 'D_PERP_COUNT' });
+          var e = tile('kite', 'any'); items.push({ svg: e.svg, desc: 'דלתון', ok: false, misPick: 'D_PAR_COUNT' });
+          return pickQ('סמנו את כל המרובעים שיש בהם *גם* צלעות מקבילות *וגם* צלעות מאונכות.', items, ['parallel', 'perp']);
+        },
+        function d2_describe_dot() {
+          return dotQ('השלימו מרובע שיש בו *שני זוגות* של צלעות מקבילות, ו*אין* בו צלעות מאונכות.', { par: 2, perp: 0 },
+            { cross: 'D_INVALID', collinear: 'D_INVALID', parMore: 'D_OTHER', parLess: 'D_PAR_COUNT', perpMore: 'D_PROTO', perpLess: 'D_OTHER' }, 'מקבילית או מעוין (לא מלבן)');
+        }
+      ],
+      3: [
+        function d3_dot_right_trap() {
+          return dotQ('השלימו מרובע שיש בו *רק זוג אחד* של צלעות מקבילות ו*רק שני זוגות* של צלעות מאונכות.', { par: 1, perp: 2 },
+            { cross: 'D_INVALID', collinear: 'D_INVALID', parMore: 'D_ATLEAST', parLess: 'D_PAR_COUNT', perpMore: 'D_ATLEAST', perpLess: 'D_PERP_COUNT' }, 'טרפז ישר-זווית');
+        },
+        function d3_impossible() {
+          var c = { label: 'לא. אם יש 3 זוויות ישרות, גם הרביעית ישרה' };
+          return { kind: 'mc', text: 'האם יש מרובע שיש בו *בדיוק 3 זוגות* של צלעות סמוכות מאונכות?', visual: '', options: mc(c, [{ label: 'כן, טרפז ישר-זווית', mis: 'D_PERP_COUNT' }, { label: 'כן, מלבן', mis: 'D_PERP_COUNT' }, { label: 'כן, מעוין', mis: 'D_PROTO' }]), expected: c.label, terms: ['perp', 'right'], one: true };
+        },
+        function d3_pick_one_pair_hard() {
+          var items = [];
+          var a = tile('trapRight', 'free'); items.push({ svg: a.svg, desc: 'טרפז ישר-זווית', ok: true, misMiss: 'D_PROTO' });
+          var b = tile('trapScal', 'free'); items.push({ svg: b.svg, desc: 'טרפז', ok: true, misMiss: 'D_PROTO' });
+          var c = tile('rhombus', 'free'); items.push({ svg: c.svg, desc: 'מעוין', ok: false, misPick: 'D_ATLEAST' });
+          var d = tile('square', 'free'); items.push({ svg: d.svg, desc: 'ריבוע', ok: false, misPick: 'D_ATLEAST' });
+          var e = tile('dart', 'free'); items.push({ svg: e.svg, desc: 'מרובע קעור', ok: false, misPick: 'D_PAR_COUNT' });
+          return pickQ('סמנו את כל המרובעים שיש בהם *רק זוג אחד* של צלעות מקבילות.', items, ['parallel']);
+        }
+      ]
+    }
+  };
+
+  /* ---------- נושאים ---------- */
+  var TOPICS = ['G', 'A', 'B', 'C', 'D'];
+  var TOPIC_N = { G: 10, A: 5, B: 5, C: 5, D: 5 };
+  var TOTAL = 30;
+  var TOPIC_INFO = {
+    G: { name: 'יסודות מכיתה ד׳: מצולעים', short: 'מצולעים (ד׳)',
+      plan: 'מיון צורות: מצולעים מול לא-מצולעים (צלע עקומה, צורה פתוחה, צלעות נחתכות), ובתוך המצולעים לפי מספר הצלעות. בונים מרובעים בגומיות על לוח מסמרים, כולל מסובבים, צרים וקעורים, וסופרים צלעות וקודקודים.' },
+    A: { name: 'צלעות סמוכות ונגדיות', short: 'סמוכות ונגדיות',
+      plan: 'בונים מרובע מרצועות להרכבה. צובעים צלע אחת, מחפשים את הצלעות שנוגעות בה בקודקוד (סמוכות) ואת הצלע שלא נוגעת בה (נגדית). מחליפים תפקידים בזוגות, ובודקים גם במרובע צר וארוך ובמרובע קעור.' },
+    B: { name: 'צלעות מקבילות', short: 'מקבילות',
+      plan: 'מאריכים צלעות בסרגל על דף מרובעים מגוונים ובודקים אם הן נפגשות. מסובבים את הדף ורואים שמקבילות נשארות מקבילות בכל כיוון, גם כשאורכן שונה.' },
+    C: { name: 'צלעות מאונכות', short: 'מאונכות',
+      plan: 'כל ילד מקפל "זווית ישרה" מנייר ובודק איתה פינות במרובעים מסובבים ובחפצים בכיתה. מדגישים: מאונכות לא חייבות להיות "עומד ושוכב", וזווית "כמעט ישרה" היא לא ישרה.' },
+    D: { name: 'מרובע לפי תנאים', short: 'לפי תנאים',
+      plan: 'עבודה על לוח נקודות: כל זוג מקבל כרטיס תנאים ("רק זוג אחד של מקבילות", "שני זוגות של מאונכות") ובונה מרובע מתאים. משווים פתרונות שונים לאותו תנאי ובודקים יחד שכל התנאים מתקיימים, כולל המילה "רק".' }
+  };
+
+  /* ---------- קטלוג תפיסות שגויות ---------- */
+  var MIS = {
+    G_CURVED: { t: 'G', name: 'מקבל צלע עקומה במצולע', explain: 'מסווג כמרובע צורה שיש לה 4 "צלעות" אבל אחת מהן עקומה. סופר צלעות בלי לבדוק שהן ישרות.', activity: 'מיון כרטיסי צורות לשתי ערימות: "כל הצלעות ישרות" ו"יש קו עקום". מניחים סרגל על כל צלע ובודקים אם היא נצמדת אליו לכל אורכה.', tools: 'כרטיסי צורות, סרגל, חוט', follow: 'ציירו צורה עם 4 קווים שאינה מרובע. מה הופך אותה ללא מרובע?' },
+    G_OPEN: { t: 'G', name: 'מקבל צורה פתוחה כמצולע', explain: 'מסווג כמצולע צורה שאינה סגורה (חסרה צלע או יש פתח). לא מבין שמצולע הוא קו שבור סגור.', activity: '"גדר לחווה": בונים גדר מקיסמים סביב חיה. אם יש פתח, החיה בורחת. מצולע הוא גדר סגורה.', tools: 'קיסמים, פלסטלינה, לוח מסמרים', follow: 'למה צורה שחסרה בה צלע אחת אינה מרובע?' },
+    G_CROSS: { t: 'G', name: 'מקבל צורה שצלעותיה נחתכות', explain: 'מסווג "פרפר" (4 קטעים שחוצים זה את זה) כמרובע, או בונה צורה כזאת. לא בודק שהצלעות נפגשות רק בקודקודים.', activity: 'בונים על לוח מסמרים גומייה סביב 4 מסמרים בסדרים שונים. משווים: מתי יוצא מרובע ומתי יוצא "פרפר"? סופרים את נקודות המפגש.', tools: 'לוח מסמרים וגומיות', follow: 'במרובע, באילו נקודות צלעות נפגשות זו בזו?' },
+    G_PROTOTYPE: { t: 'G', name: 'מזהה רק מרובעים "שגרתיים"', explain: 'מזהה מרובע רק כשהוא ריבוע או מלבן "עומד". מרובע מסובב, צר, לא סימטרי או בלי זוויות ישרות לא נראה לו מרובע.', activity: 'כל ילד בונה על לוח מסמרים מרובע "מוזר" ככל האפשר, וכולם בודקים: כמה צלעות? כמה קודקודים? מסובבים כרטיס ריבוע ושואלים אם הוא עדיין ריבוע.', tools: 'לוח מסמרים, כרטיסי צורות לסיבוב', follow: 'ציירו שני מרובעים שונים זה מזה ככל שאפשר.' },
+    G_CONCAVE: { t: 'G', name: 'לא מקבל מרובע קעור', explain: 'חושב שמרובע עם "שקע" פנימה (צורת חץ) אינו מרובע, אף שיש לו 4 צלעות ישרות ו-4 קודקודים.', activity: 'בונים מרובע מגומייה על 4 מסמרים ומזיזים קודקוד אחד פנימה בהדרגה. בכל שלב סופרים צלעות וקודקודים: האם משהו השתנה?', tools: 'לוח מסמרים, רצועות להרכבה', follow: 'האם צורת "חץ" עם 4 צלעות היא מרובע? הסבירו.' },
+    G_CONCAVE_VERTEX: { t: 'G', name: 'מדלג על הקודקוד ה"פנימי"', explain: 'במצולע קעור לא סופר את הקודקוד שפונה פנימה, ולכן מקבל מספר קודקודים קטן מהנכון.', activity: 'מסמנים כל קודקוד במדבקה תוך כדי מעבר באצבע לאורך הגבול. מכריזים "צלע – קודקוד – צלע – קודקוד" עד שחוזרים להתחלה.', tools: 'מדבקות עגולות, דפי מצולעים קעורים', follow: 'כמה קודקודים יש לצורת האות ל?' },
+    G_COLLINEAR: { t: 'G', name: 'נקודה על צלע ישרה = קודקוד', explain: 'סופר כקודקוד נקודה שנמצאת באמצע צלע ישרה, או בונה "מרובע" ששלוש מנקודותיו על ישר אחד.', activity: 'מניחים סרגל לאורך הצלע: אם הקו ממשיך ישר, אין שם קודקוד. קודקוד הוא מקום שבו הכיוון משתנה.', tools: 'סרגל, לוח מסמרים', follow: 'על צלע של משולש סימנו נקודה. האם עכשיו יש למשולש 4 קודקודים?' },
+    G_VERTEX_MEANING: { t: 'G', name: 'לא ברור מהו קודקוד', explain: 'בוחר נקודות שאינן מפגש של שתי צלעות (בתוך הצורה), או מפספס קודקודים רגילים. המושג "קודקוד" עוד לא מבוסס.', activity: 'משחק "איפה הצלעות נפגשות?": בכל פינה של צורה גדולה על הרצפה עומד ילד. סופרים את הילדים ואת הצלעות ביניהם.', tools: 'סרט הדבקה על הרצפה, מדבקות', follow: 'הצביעו על כל הקודקודים של המחברת שלכם.' },
+    G_SIDES_VERTS: { t: 'G', name: 'לא מקשר בין צלעות לקודקודים', explain: 'לא יודע שבכל מצולע מספר הצלעות שווה למספר הקודקודים, וסופר כל אחד בנפרד (ולעתים טועה).', activity: 'בונים מצולעים מקיסמים ופלסטלינה: כל קיסם צלע, כל כדור פלסטלינה קודקוד. רושמים בטבלה ומגלים את הכלל.', tools: 'קיסמים, פלסטלינה, טבלה', follow: 'למצולע יש 12 צלעות. כמה קודקודים יש לו? איך יודעים בלי לצייר?' },
+    G_MISCOUNT: { t: 'G', name: 'טעות בספירת צלעות או בשם המצולע', explain: 'סופר צלעות או קודקודים לא נכון, או מבלבל בין מרובע למצולע עם מספר צלעות אחר (משולש, מחומש).', activity: 'סופרים צלעות תוך סימון כל צלע בצבע. מחברים כל שם למספר: משולש 3, מרובע 4, מחומש 5, משושה 6.', tools: 'כרטיסי צורות, טושים', follow: 'כמה צלעות יש למחומש? ציירו אחד.' },
+    G_OTHER: { t: 'G', name: 'קושי כללי במצולעים', explain: 'טעות שאינה מתאימה לדפוס מוכר. כדאי לבקש מהילד להסביר בקול איך החליט.', activity: 'הילד ממיין 8 צורות ל"מצולע / לא מצולע" ומסביר כל החלטה.', tools: 'כרטיסי צורות', follow: 'מה צריך שיהיה לצורה כדי שתהיה מרובע?' },
+
+    A_SWAP_TERMS: { t: 'A', name: 'מחליף בין סמוכות לנגדיות', explain: 'בוחר צלע סמוכה כשמבקשים נגדית, או להפך. המושגים עוד לא מקושרים ל"קודקוד משותף".', activity: 'הכלל בכיתה: "סמוכות נוגעות, נגדיות לא נוגעות". צובעים צלע באדום, ובאצבע הולכים לקודקוד שבקצה: הצלע שממשיכה משם סמוכה.', tools: 'רצועות להרכבה בשני צבעים', follow: 'במלבן צבעו צלע אחת. כמה צלעות סמוכות לה? כמה נגדיות?' },
+    A_VISUAL_NEAR: { t: 'A', name: 'סמוכות = קרובות במרחק', explain: 'חושב שצלעות סמוכות הן צלעות שנראות קרובות בציור, ולכן במרובע צר וארוך בוחר את שתי הצלעות הארוכות (שהן נגדיות).', activity: 'מרובע צר וארוך מרצועות. שואלים: "האם שתי הצלעות הארוכות נוגעות זו בזו?" מזכירים: סמוכות לפי קודקוד משותף, לא לפי מרחק.', tools: 'רצועות להרכבה, מרובעים צרים', follow: 'במרובע צר וארוך, האם שתי הצלעות הארוכות סמוכות?' },
+    A_ONE_ADJ: { t: 'A', name: 'מוצא רק צלע סמוכה אחת', explain: 'מסמן רק צלע סמוכה אחת, ולא שם לב שבכל קצה של הצלע יש קודקוד ולכן יש לה שתי צלעות סמוכות.', activity: 'שמים אצבע אחת על כל קצה של הצלע האדומה. "באיזו צלע נוגעת כל אצבע?" שתי אצבעות, שתי סמוכות.', tools: 'רצועות להרכבה', follow: 'כמה צלעות סמוכות יש לכל צלע במחומש?' },
+    A_ALL_ADJ: { t: 'A', name: 'כל הצלעות האחרות "סמוכות"', explain: 'חושב שכל הצלעות שאינן הצלע עצמה סמוכות לה, או סופר יותר זוגות סמוכים מהקיים.', activity: 'במחומש ובמשושה גדולים צובעים צלע ובודקים לכל צלע אחרת: "יש קודקוד משותף?" רק שתיים עונות כן.', tools: 'מצולעים מרצועות', follow: 'במשושה, כמה צלעות אינן סמוכות לצלע מסוימת?' },
+    A_COUNT_PAIRS: { t: 'A', name: 'טעות בספירת זוגות צלעות', explain: 'סופר צלעות במקום זוגות, או סופר כל זוג פעמיים. למשל עונה שיש 4 זוגות של צלעות נגדיות במרובע.', activity: 'צובעים כל זוג בצבע אחר: זוגות נגדיים בצבע אחד לכל זוג (2 צבעים). זוגות סמוכים מסמנים בקשת בכל קודקוד (4 קשתות).', tools: 'טושים בכמה צבעים', follow: 'כמה זוגות של צלעות נגדיות יש בריבוע? כמה זוגות סמוכות?' },
+    A_LENGTH: { t: 'A', name: 'מקשר סמוכות/נגדיות לאורך', explain: 'חושב שצלעות סמוכות או נגדיות מוגדרות לפי האורך (למשל "סמוכות = שוות").', activity: 'משווים מרובעים שבהם הצלעות הנגדיות שוות (מלבן) ומרובעים שבהם לא (טרפז). המיקום, לא האורך, קובע.', tools: 'רצועות באורכים שונים', follow: 'האם בטרפז הצלעות הנגדיות שוות באורכן? האם הן עדיין נגדיות?' },
+    A_OTHER: { t: 'A', name: 'קושי כללי בסמוכות ונגדיות', explain: 'טעות שאינה מתאימה לדפוס מוכר. כדאי לבקש מהילד להראות באצבע איך בחר.', activity: 'הילד מסמן במרובע את כל הזוגות ומסביר.', tools: 'מרובע מרצועות', follow: 'הראו במרובע שני זוגות של צלעות נגדיות.' },
+
+    B_ORIENT: { t: 'B', name: 'מקבילות רק "ישרות" על הדף', explain: 'מזהה צלעות מקבילות רק כשהן אופקיות או אנכיות. כשהמרובע מסובב, לא מזהה את המקבילות.', activity: 'מניחים שני סרגלים מקבילים על דף ומסובבים את הדף: "האם הסרגלים עכשיו נפגשים?" בודקים מקבילות במרובעים מסובבים בעזרת שני סרגלים.', tools: 'שני סרגלים, דפים מסובבים', follow: 'ציירו שני ישרים מקבילים שאף אחד מהם אינו אופקי.' },
+    B_LENGTH: { t: 'B', name: 'מקבילות = שוות באורכן', explain: 'חושב שצלעות מקבילות חייבות להיות באותו אורך (לכן לא מקבל את בסיסי הטרפז), או שצלעות שוות הן מקבילות (כמו בדלתון).', activity: 'מניחים שני מקלות באורכים שונים על פסי מחברת: הם מקבילים. אחר כך שני מקלות שווים בהטיה: לא מקבילים.', tools: 'מקלות באורכים שונים, מחברת שורות', follow: 'האם שני ישרים מקבילים יכולים להיות באורכים שונים? ציירו.' },
+    B_NO_EXTEND: { t: 'B', name: 'לא בודק מה קורה בהמשך הצלעות', explain: 'קובע מקבילות "לפי מראה עין": צלעות שלא נפגשות בתוך הצורה נראות לו מקבילות, אף שאם ממשיכים אותן הן נפגשות.', activity: 'שיטת מאיה: מאריכים בסרגל את שתי הצלעות עד קצה הדף. אם הן מתקרבות זו לזו או נפגשות, הן לא מקבילות.', tools: 'סרגל ארוך, דפים גדולים', follow: 'איך בודקים אם שוקי טרפז מקבילות?' },
+    B_PERP_CONFUSE: { t: 'B', name: 'מבלבל בין מקבילים למאונכים', explain: 'מחליף בין המושגים: חושב שמקבילים נפגשים בזווית ישרה, או בוחר זוג מאונך כשמבקשים מקביל.', activity: 'תנועות גוף: שתי ידיים קדימה = מקבילות; יד אחת למעלה ואחת לצד = מאונכות. ממיינים כרטיסי זוגות קווים לשתי קבוצות.', tools: 'כרטיסי זוגות קווים', follow: 'ציירו זוג ישרים מקבילים וזוג ישרים מאונכים.' },
+    B_ATLEAST: { t: 'B', name: 'מתעלם מהמילה "רק"', explain: 'כשמבקשים מרובע עם "רק זוג אחד" של מקבילות, בונה מקבילית או מלבן (שני זוגות). קורא את התנאי כ"לפחות".', activity: 'משחק תנאים: לכל מרובע בודקים "כמה בדיוק?" וסופרים. מדגישים את ההבדל בין "רק זוג אחד" ל"לפחות זוג אחד".', tools: 'כרטיסי תנאים, לוח נקודות', follow: 'האם במלבן יש "רק זוג אחד" של צלעות מקבילות?' },
+    B_ADJ: { t: 'B', name: 'בוחר צלע סמוכה כמקבילה', explain: 'בוחר צלע שנוגעת בצלע האדומה כמקבילה לה. לא מבין שצלעות עם קודקוד משותף אינן יכולות להיות מקבילות.', activity: 'שואלים: "אם יש לשתי צלעות נקודה משותפת, האם הן יכולות להיות מקבילות?" בודקים בהגדרה ובשני סרגלים.', tools: 'שני סרגלים', follow: 'האם שתי צלעות סמוכות יכולות להיות מקבילות? למה?' },
+    B_OTHER: { t: 'B', name: 'קושי כללי במקבילות', explain: 'טעות שאינה מתאימה לדפוס מוכר. כדאי לבקש מהילד להראות איך בדק.', activity: 'הילד בודק עם סרגל ארוך זוגות צלעות בשלושה מרובעים ומסביר.', tools: 'סרגל', follow: 'איך אפשר לבדוק אם שתי צלעות מקבילות?' },
+
+    C_ORIENT: { t: 'C', name: 'מאונכות רק "עומד ושוכב"', explain: 'מזהה צלעות מאונכות רק כשאחת אופקית ואחת אנכית. פינה ישרה של מלבן מסובב לא נראית לו ישרה.', activity: 'בודקים עם "זווית ישרה" מנייר פינות של מלבן שמסובבים על השולחן. הפינה נשארת ישרה בכל סיבוב.', tools: 'זווית ישרה מקופלת, מלבני קרטון', follow: 'ציירו שני ישרים מאונכים שאף אחד מהם אינו אופקי.' },
+    C_ORIENT_H: { t: 'C', name: 'צלע אופקית = זווית ישרה', explain: 'בוחר זוג צלעות כמאונך רק כי אחת מהן אופקית, בלי לבדוק את הזווית ביניהן.', activity: 'משווים פינה של מקבילית "שוכבת" לפינה של מלבן בעזרת זווית ישרה מנייר.', tools: 'זווית ישרה מקופלת', follow: 'בציור, צלע אחת אופקית. האם זה מספיק כדי שהצלעות יהיו מאונכות?' },
+    C_ROUGH: { t: 'C', name: 'מקבל זווית "כמעט ישרה" כישרה', explain: 'קובע מאונכות לפי מראה עין, ומקבל זווית קרובה ל-90 מעלות (בפינת מקבילית או מעוין) כזווית ישרה.', activity: 'כל ילד מקפל זווית ישרה מנייר ובודק 6 פינות בדף: איפה היא נצמדת בדיוק ואיפה נשאר רווח?', tools: 'זווית ישרה מנייר, דפי מרובעים', follow: 'איך בודקים אם פינה היא בדיוק זווית ישרה?' },
+    C_PAR_CONFUSE: { t: 'C', name: 'מבלבל בין מאונכים למקבילים', explain: 'בוחר זוג צלעות מקבילות כשמבקשים מאונכות, או מגדיר מאונכים כ"לא נפגשים".', activity: 'תנועות גוף: ידיים מקבילות מול ידיים מאונכות. ממיינים זוגות קווים לשתי קבוצות ומדביקים שם לכל קבוצה.', tools: 'כרטיסי זוגות קווים', follow: 'במלבן, אילו צלעות מקבילות ואילו מאונכות?' },
+    C_ANY_CROSS: { t: 'C', name: 'כל ישרים נחתכים = מאונכים', explain: 'חושב שמספיק ששני ישרים נחתכים כדי שיהיו מאונכים, בלי קשר לזווית.', activity: 'שני מקלות שנחתכים בזוויות שונות. בודקים בכל פעם עם זווית ישרה: רק במצב אחד הם מאונכים.', tools: 'שני מקלות, זווית ישרה מנייר', follow: 'ציירו שני ישרים שנחתכים אבל אינם מאונכים.' },
+    C_PAIRS: { t: 'C', name: 'טעות בספירת זוגות מאונכים', explain: 'סופר זוגות מאונכים כמו זוגות נגדיים (למשל 2 במלבן), ולא סופר כל פינה ישרה בנפרד.', activity: 'מסמנים במלבן כל זווית ישרה בריבוע קטן וסופרים: כל זווית ישרה היא זוג אחד של צלעות מאונכות.', tools: 'דפי מרובעים, טושים', follow: 'כמה זוגות של צלעות מאונכות יש בריבוע?' },
+    C_PROTO: { t: 'C', name: 'מאונכות רק במלבן ובריבוע', explain: 'מחפש צלעות מאונכות רק במלבנים וריבועים, ולא מזהה זווית ישרה בטרפז ישר-זווית או במרובעים אחרים.', activity: 'סיור במרובעים מגוונים עם זווית ישרה מנייר: בכל מרובע מחפשים פינות ישרות ומסמנים אותן.', tools: 'זווית ישרה, דפי מרובעים', follow: 'ציירו מרובע שאינו מלבן ויש בו זווית ישרה.' },
+    C_ATLEAST: { t: 'C', name: 'מתעלם מהמילה "רק" (מאונכות)', explain: 'כשמבקשים "רק שני זוגות" של מאונכות, בונה מלבן (ארבעה זוגות).', activity: 'סופרים זוגות מאונכים במלבן, בטרפז ישר-זווית ובמקבילית, ומתאימים כל מרובע לכרטיס "בדיוק 0 / 2 / 4".', tools: 'כרטיסי תנאים, לוח נקודות', follow: 'למה מלבן לא מתאים לתנאי "רק שני זוגות של צלעות מאונכות"?' },
+    C_TERMS: { t: 'C', name: 'מבלבל בין מושגי צלעות', explain: 'מערבב בין סמוכות, נגדיות ומאונכות, ועונה במושג לא מתאים.', activity: 'כרטיסיות מושגים עם ציור לכל מושג. בכל מרובע מצמידים כרטיסייה לכל זוג צלעות.', tools: 'כרטיסיות מושגים', follow: 'במלבן, מה אפשר לומר על שתי צלעות סמוכות? ועל שתי צלעות נגדיות?' },
+    C_OTHER: { t: 'C', name: 'קושי כללי במאונכות', explain: 'טעות שאינה מתאימה לדפוס מוכר. כדאי לבקש מהילד להראות איך בדק.', activity: 'הילד בודק פינות במרובעים עם זווית ישרה מנייר ומסביר.', tools: 'זווית ישרה מנייר', follow: 'איך יודעים ששתי צלעות מאונכות?' },
+
+    D_PAR_COUNT: { t: 'D', name: 'טעות במספר זוגות המקבילות', explain: 'בונה או בוחר מרובע עם מספר זוגות מקבילות שונה מהנדרש (למשל אף זוג כשנדרש זוג אחד).', activity: 'לפני שבונים, מסמנים בצבע את הזוג שצריך להיות מקביל ובונים אותו קודם. אחר כך בודקים שהזוג השני לא מקביל.', tools: 'לוח נקודות, סרגל', follow: 'בנו על לוח נקודות מרובע עם זוג אחד בלבד של צלעות מקבילות.' },
+    D_PERP_COUNT: { t: 'D', name: 'טעות במספר זוגות המאונכות', explain: 'בוחר או בונה מרובע עם מספר זוויות ישרות שונה מהנדרש, או לא שם לב שאין בו זוויות ישרות כלל.', activity: 'לכל מרובע שבונים, בודקים כל פינה עם זווית ישרה ורושמים "כן/לא". סופרים בסוף.', tools: 'זווית ישרה מנייר, לוח נקודות', follow: 'כמה זוויות ישרות יש בטרפז ישר-זווית?' },
+    D_ATLEAST: { t: 'D', name: '"רק" נקרא כ"לפחות"', explain: 'בונה מרובע שמקיים את התנאי ויותר ממנו (למשל מלבן כשמבקשים רק זוג אחד של מקבילות).', activity: 'קוראים את התנאי בקול ומקיפים את המילה "רק". אחרי הבנייה סופרים: האם יש יותר ממה שביקשו?', tools: 'כרטיסי תנאים', follow: 'האם ריבוע מתאים לתנאי "רק זוג אחד של צלעות מקבילות"?' },
+    D_INVALID: { t: 'D', name: 'בונה צורה שאינה מרובע', explain: 'הצורה שבנה אינה מרובע: הצלעות נחתכות זו בזו, או ששלוש נקודות נמצאות על ישר אחד.', activity: 'אחרי בנייה בודקים: 4 צלעות? 4 קודקודים? הצלעות נפגשות רק בקודקודים? מתקנים יחד דוגמאות שגויות.', tools: 'לוח מסמרים וגומיות', follow: 'בנו מרובע על לוח נקודות ובדקו שהוא באמת מרובע.' },
+    D_PROTO: { t: 'D', name: 'חושב רק על מרובע אחד מוכר', explain: 'מזהה את התכונות רק בריבוע או במלבן "עומדים", ולא מכליל לטרפז ישר-זווית או למרובעים מסובבים.', activity: 'כל זוג בונה שני מרובעים שונים לאותו תנאי, ומציגים לכיתה את כל הפתרונות השונים.', tools: 'לוח נקודות', follow: 'מצאו שני מרובעים שונים שיש בהם גם צלעות מקבילות וגם צלעות מאונכות.' },
+    D_OTHER: { t: 'D', name: 'קושי כללי בתנאים', explain: 'טעות שאינה מתאימה לדפוס מוכר. כדאי לבקש מהילד לקרוא את התנאי ולהסביר מה בנה.', activity: 'הילד בונה מרובע לפי תנאי אחד בכל פעם, ובודק אותו בקול.', tools: 'לוח נקודות', follow: 'מה צריך לבדוק כדי לדעת שמרובע מקיים תנאי?' }
+  };
+
+  /* ---------- סיווג תשובה ---------- */
+  function relName(q, s) {
+    var n = q.pts.length, r = q.red[0];
+    if (r == null) return 'צלע ' + (s + 1);
+    var near = s === (r + 1) % n || s === (r + n - 1) % n;
+    var base = near ? 'צלע סמוכה' : (n === 4 ? 'הצלע הנגדית' : 'צלע לא סמוכה');
+    var u = sideVec(q.pts, r), v = sideVec(q.pts, s), d = lineDiff(u, v);
+    if (d < 0.5) base += ' (מקבילה)'; else if (Math.abs(d - 90) < 0.5) base += ' (מאונכת)';
+    return base;
+  }
+  function setEq(a, b) { a = a.slice().sort(); b = b.slice().sort(); return a.length === b.length && a.every(function (x, i) { return x === b[i]; }); }
+  function classify(q, ans) {
+    var r = { c: false, m: '', a: '' }, other = q.topic + '_OTHER';
+    if (q.kind === 'mc') {
+      var o = q.options[ans];
+      r.c = !!(o && o.correct); r.m = r.c ? '' : (o && o.mis) || other; r.a = o ? o.desc : '';
+    } else if (q.kind === 'int') {
+      var x = +ans; r.a = String(x); r.c = x === q.target;
+      if (!r.c) { r.m = other; for (var k = 0; k < q.mis.length; k++) if (q.mis[k].v === x) { r.m = q.mis[k].mis; break; } }
+    } else if (q.kind === 'tapside') {
+      var sel = (ans || []).slice().sort();
+      r.c = q.anyOf ? sel.length === 1 && q.target.indexOf(sel[0]) >= 0 : setEq(sel, q.target);
+      if (!r.c) {
+        var wrong = sel.filter(function (s) { return q.target.indexOf(s) < 0; });
+        r.m = wrong.length ? (q.sideMis[wrong[0]] || other) : (q.missMis || other);
+      }
+      r.a = sel.map(function (s) { return relName(q, s); }).join(', ') || '—';
+    } else if (q.kind === 'pick' || q.kind === 'tappts') {
+      var chosen = ans || [], items = q.items;
+      var picked = items.map(function (it, i) { return chosen.indexOf(i) >= 0; });
+      r.c = items.every(function (it, i) { return !!it.ok === picked[i]; });
+      if (!r.c) {
+        var wp = items.filter(function (it, i) { return !it.ok && picked[i]; })[0];
+        var mm = items.filter(function (it, i) { return it.ok && !picked[i]; })[0];
+        r.m = (wp && wp.misPick) || (mm && mm.misMiss) || other;
+      }
+      r.a = items.filter(function (it, i) { return picked[i]; }).map(function (it) { return it.desc; }).join(', ') || '—';
+    } else if (q.kind === 'dotgrid') {
+      var res = dotCheck(q, ans); r.c = res.c; r.m = res.c ? '' : (res.m || other);
+      r.a = dotName([q.seg[0], q.seg[1], ans[0], ans[1]]);
+    }
+    if (r.m && !MIS[r.m]) r.m = other;
+    return r;
+  }
+
+  /* ---------- מנוע אדפטיבי ---------- */
+  function newState() {
+    var z = function (v) { var o = {}; TOPICS.forEach(function (t) { o[t] = v; }); return o; };
+    return { v: 2, ti: 0, qi: 0, n: 0, lv: z(2), st: z(0), sc: z(0), last: '', start: 0 };
+  }
+  function done(s) { return s.ti >= TOPICS.length; }
+  function startLevelFrom(correct, of) { var p = correct / of; return p < 0.6 ? 1 : p > 0.8 ? 3 : 2; }
+  function nextQuestion(s) {
+    var t = TOPICS[s.ti], lv = s.lv[t], gens = GEN[t][lv];
+    var choices = gens.filter(function (g) { return g.name !== s.last; });
+    for (var tries = 0; tries < 6; tries++) {
+      var g = pick(choices.length ? choices : gens), q = make(g, t, lv);
+      if (q) return q;
+    }
+    return make(gens[0], t, lv);
+  }
+  function make(g, t, lv) {
+    var q = g();
+    if (!q) return null;
+    q.topic = t; q.level = lv; q.gid = g.name;
+    if (q.kind === 'int') q.mis = q.mis.filter(function (m) { return m.v !== q.target && m.v > 0; });
+    if (!q.terms) q.terms = [];
+    if (q.tools && lv === 3) q.tools = [];
+    return q;
+  }
+  function applyAnswer(s, q, res) {
+    var t = q.topic;
+    s.n++; s.last = q.gid;
+    if (res.c) s.sc[t]++;
+    var st = s.st[t];
+    st = res.c ? (st > 0 ? st + 1 : 1) : (st < 0 ? st - 1 : -1);
+    if (st >= 2 && s.lv[t] < 3) { s.lv[t]++; st = 0; }
+    else if (st <= -2 && s.lv[t] > 1) { s.lv[t]--; st = 0; }
+    s.st[t] = st;
+    s.qi++;
+    if (s.qi >= TOPIC_N[t]) {
+      s.qi = 0; s.ti++;
+      // הבסיס מכיתה ד׳ קובע את רמת הפתיחה בשאר הנושאים
+      if (t === 'G') { var L = startLevelFrom(s.sc.G, TOPIC_N.G); s.start = L; TOPICS.slice(1).forEach(function (x) { s.lv[x] = L; }); }
+    }
+    return s;
+  }
+  function record(q, res, n) {
+    var g = q.gid + (q.usedTool ? '+t' : '') + (q.usedDef ? '+d' : '');
+    return { n: n, t: q.topic, lv: q.level, k: q.kind, g: g, q: toPlain(q.text), e: toPlain(q.expected || ''), a: res.a, c: res.c ? 1 : 0, m: res.m || '' };
+  }
+
+  /* ---------- סימולציה (לתצוגה מקדימה ולבדיקות) ---------- */
+  function simulate(q, wantCorrect, pref) {
+    pref = pref || [];
+    function choose(list) {
+      for (var i = 0; i < pref.length; i++) for (var j = 0; j < list.length; j++) if (list[j].mis === pref[i]) return list[j];
+      return list.length ? pick(list) : null;
+    }
+    if (q.kind === 'mc') {
+      if (wantCorrect) return q.options.findIndex(function (o) { return o.correct; });
+      var w = choose(q.options.map(function (o, i) { return { i: i, mis: o.mis, c: o.correct }; }).filter(function (o) { return !o.c; }));
+      return w ? w.i : 0;
+    }
+    if (q.kind === 'int') { if (wantCorrect) return q.target; var iv = choose(q.mis.map(function (m) { return { v: m.v, mis: m.mis }; })); return iv ? iv.v : q.target + 1; }
+    if (q.kind === 'tapside') {
+      if (wantCorrect) return q.anyOf ? [pick(q.target)] : q.target.slice();
+      var opts = Object.keys(q.sideMis).map(function (k) { return { s: +k, mis: q.sideMis[k] }; });
+      if (q.multi && q.target.length > 1) opts.push({ s: -1, mis: q.missMis });
+      var c = choose(opts);
+      if (!c) return [q.target[0], (q.target[0] + 1) % q.pts.length].filter(function (x, i, a) { return a.indexOf(x) === i; });
+      if (c.s === -1) return [q.target[0]];
+      return q.multi ? q.target.slice(0, 1).concat([c.s]) : [c.s];
+    }
+    if (q.kind === 'pick' || q.kind === 'tappts') {
+      var good = q.items.map(function (it, i) { return it.ok ? i : -1; }).filter(function (i) { return i >= 0; });
+      if (wantCorrect) return good;
+      var cands = [];
+      q.items.forEach(function (it, i) {
+        if (!it.ok && it.misPick) cands.push({ mis: it.misPick, ans: good.concat([i]) });
+        if (it.ok && it.misMiss) cands.push({ mis: it.misMiss, ans: good.filter(function (g) { return g !== i; }) });
+      });
+      var pc = choose(cands.filter(function (x) { return x.ans.length; }));
+      return pc ? pc.ans : good.slice(1);
+    }
+    if (q.kind === 'dotgrid') {
+      var all = dotAll(q);
+      if (wantCorrect) { var ok = all.filter(function (x) { return x.r.c; }); return pick(ok).cd; }
+      var bad = all.filter(function (x) { return !x.r.c; }).map(function (x) { return { mis: x.r.m, cd: x.cd }; });
+      var b = choose(bad); return b.cd;
+    }
+  }
+
+  /* ---------- ניתוח למסך המורה ---------- */
+  function analyze(attempts, answers) {
+    var byAtt = {};
+    answers.forEach(function (a) { (byAtt[a.id] = byAtt[a.id] || []).push(a); });
+    var students = attempts.map(function (at) {
+      var list = (byAtt[at.id] || []).sort(function (x, y) { return x.n - y.n; });
+      var topics = {};
+      TOPICS.forEach(function (t) { topics[t] = { asked: 0, correct: 0, level: null }; });
+      var mis = {}, tools = 0, defs = 0;
+      list.forEach(function (a) {
+        var T = topics[a.t]; if (!T) return;
+        T.asked++; if (a.c) T.correct++;
+        if (!a.c && a.m) mis[a.m] = (mis[a.m] || 0) + 1;
+        if (/\+t/.test(a.g || '')) tools++;
+        if (/\+d/.test(a.g || '')) defs++;
+      });
+      TOPICS.forEach(function (t) {
+        var tl = list.filter(function (a) { return a.t === t; });
+        if (!tl.length) return;
+        var lv = 2, st = 0;
+        tl.forEach(function (a) {
+          lv = a.lv;
+          st = a.c ? (st > 0 ? st + 1 : 1) : (st < 0 ? st - 1 : -1);
+          if (st >= 2 && lv < 3) { lv++; st = 0; } else if (st <= -2 && lv > 1) { lv--; st = 0; }
+        });
+        topics[t].level = lv;
+      });
+      var start = topics.G.asked >= TOPIC_N.G ? startLevelFrom(topics.G.correct, TOPIC_N.G) : null;
+      return { start: start, tools: tools, defs: defs, id: at.id, name: at.name, status: at.status, started: at.started, updated: at.updated, sessionId: at.sessionId, answers: list, topics: topics, mis: mis, total: list.length, correct: list.filter(function (a) { return a.c; }).length };
+    });
+    var topicStats = {};
+    TOPICS.forEach(function (t) {
+      var asked = 0, cor = 0, lvSum = 0, lvN = 0;
+      students.forEach(function (s) { asked += s.topics[t].asked; cor += s.topics[t].correct; if (s.topics[t].level) { lvSum += s.topics[t].level; lvN++; } });
+      topicStats[t] = { asked: asked, correct: cor, pct: asked ? Math.round(100 * cor / asked) : null, avgLevel: lvN ? lvSum / lvN : null, students: lvN };
+    });
+    var misAgg = {};
+    students.forEach(function (s) {
+      Object.keys(s.mis).forEach(function (m) {
+        var A = misAgg[m] = misAgg[m] || { id: m, count: 0, students: [] };
+        A.count += s.mis[m]; A.students.push({ name: s.name, id: s.id, count: s.mis[m] });
+      });
+    });
+    var misList = Object.keys(misAgg).map(function (k) { return misAgg[k]; }).sort(function (a, b) {
+      var ao = /_OTHER$/.test(a.id), bo = /_OTHER$/.test(b.id);
+      if (ao !== bo) return ao ? 1 : -1;
+      return b.students.length - a.students.length || b.count - a.count;
+    });
+    var groups = {}; TOPICS.forEach(function (t) { groups[t] = []; }); groups.ADV = []; groups.MIX = [];
+    students.forEach(function (s) {
+      if (s.total < 6) return;
+      var weakest = null, wAcc = 2, allStrong = true;
+      TOPICS.forEach(function (t) {
+        var T = s.topics[t]; if (!T.asked) { allStrong = false; return; }
+        var acc = T.correct / T.asked;
+        if (acc < 0.8 || (T.level || 2) < 3) allStrong = false;
+        var weak = acc < 0.6 || T.level === 1;
+        if (weak && acc < wAcc) { wAcc = acc; weakest = t; }
+      });
+      var top = Object.keys(s.mis).filter(function (m) { return !/_OTHER$/.test(m); }).sort(function (a, b) { return s.mis[b] - s.mis[a]; });
+      var entry = { name: s.name, id: s.id, mis: top.slice(0, 2) };
+      if (weakest) groups[weakest].push(entry);
+      else if (allStrong && s.status === 'done') groups.ADV.push(entry);
+      else groups.MIX.push(entry);
+    });
+    return { students: students, topicStats: topicStats, misList: misList, groups: groups };
+  }
+
+  return {
+    TOPICS: TOPICS, TOPIC_N: TOPIC_N, TOPIC_INFO: TOPIC_INFO, MIS: MIS, GEN: GEN, TERMS: TERMS, TERM_SVG: TERM_SVG,
+    newState: newState, nextQuestion: nextQuestion, make: make, applyAnswer: applyAnswer, done: done, classify: classify, record: record,
+    simulate: simulate, analyze: analyze, toHTML: toHTML, toSpeech: toSpeech, toPlain: toPlain, esc: esc,
+    total: TOTAL, polySVG: polySVG, rightAngleAt: rightAngleAt, gxy: gxy, GRID: GRID, GS: GS, GO: GO, dotInfo: dotInfo, dotName: dotName, dotAll: dotAll, props: props, isSimple: isSimple, isConvex: isConvex, EXPECT: EXPECT, shape: shape, NAME: NAME
+  };
+})();
+if (typeof module !== 'undefined') module.exports = FR;
+
+</script>
+<script>
+/* ===== שרת מדומה – פעיל רק בתצוגה מקדימה (כש-google.script.run לא קיים) ===== */
+var MOCK = (function () {
+  'use strict';
+  var KEY = 'mq_mock', CODE = '1234', URL = 'https://script.google.com/macros/s/EXAMPLE/exec';
+  var mem = null;
+  function load() {
+    if (mem) return mem;
+    try { var v = localStorage.getItem(KEY); if (v) mem = JSON.parse(v); } catch (e) { mem = null; }
+    if (!mem) { mem = seed(); save(); }
+    return mem;
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (e) { /* ignore */ } }
+  function uid() { return Math.random().toString(16).slice(2, 10); }
+  function iso(ms) { return new Date(ms).toISOString(); }
+
+  function seed() {
+    var now = Date.now(), sid = 'S-demo';
+    var db = { open: true, current: sid, sessions: [{ id: sid, label: 'סבב לדוגמה', created: iso(now - 3600e3) }], attempts: [], answers: [] };
+    var kids = ['נועה ל.', 'איתי ב.', 'מאיה כ.', 'יונתן ש.', 'תמר א.', 'עומר ד.', 'שירה מ.', 'אורי ג.', 'ליה ר.', 'דניאל ח.', 'הילה פ.', 'רועי ז.', 'אביגיל ס.', 'נדב ק.'];
+    var common = { G: ['G_PROTOTYPE', 'G_CONCAVE_VERTEX', 'G_CURVED'], A: ['A_SWAP_TERMS', 'A_VISUAL_NEAR', 'A_ONE_ADJ'], B: ['B_ORIENT', 'B_NO_EXTEND', 'B_LENGTH'], C: ['C_ORIENT', 'C_ROUGH', 'C_PAR_CONFUSE'], D: ['D_ATLEAST', 'D_PAR_COUNT', 'D_INVALID'] };
+    kids.forEach(function (name, ki) {
+      var skill = {}, pref = [];
+      FR.TOPICS.forEach(function (t) {
+        skill[t] = 0.35 + Math.random() * 0.6;
+        var c = common[t];
+        pref.push(Math.random() < 0.65 ? c[0] : c[1 + Math.floor(Math.random() * 2)]);
+      });
+      if (ki < 3) FR.TOPICS.forEach(function (t) { skill[t] = 0.9 + Math.random() * 0.08; });
+      var id = uid(), st = FR.newState(), t0 = now - (50 - ki) * 60e3, stopAt = ki >= kids.length - 2 ? 8 + ki % 6 : FR.total;
+      var att = [id, name, name.replace(/\s.*/, '') + '|' + name.split(' ')[1].charAt(0), sid, iso(t0), iso(t0), 'active', 0];
+      while (!FR.done(st) && st.n < stopAt) {
+        var q = FR.nextQuestion(st);
+        var p = skill[q.topic] - (q.level - 2) * 0.15;
+        var ans = FR.simulate(q, Math.random() < p, pref);
+        if (Math.random() < 0.12 && q.terms && q.terms.length) q.usedDef = true;
+        if (Math.random() < 0.3 && q.tools && q.tools.length) q.usedTool = true;
+        var res = FR.classify(q, ans), rec = FR.record(q, res, st.n + 1);
+        FR.applyAnswer(st, q, res);
+        db.answers.push([id, rec.n, rec.t, rec.lv, rec.k, rec.c, rec.m, rec.q, rec.e, rec.a, rec.g, iso(t0 + rec.n * 70e3)]);
+      }
+      att[5] = iso(t0 + st.n * 70e3); att[6] = FR.done(st) ? 'done' : 'active'; att[7] = st.n;
+      db.attempts.push(att);
+      db['state_' + id] = st;
+    });
+    return db;
+  }
+
+  function cur() { var d = load(); return d.sessions.filter(function (s) { return s.id === d.current; })[0] || {}; }
+  function auth(code) { if (String(code || '').trim() !== CODE) throw new Error('קוד המורה שגוי'); }
+
+  return {
+    _reset: function () { try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } mem = null; load(); },
+    getBoot: function () { var d = load(); return { url: URL, open: d.open, sessionLabel: cur().label }; },
+    studentStart: function (first, initial, forceNew) {
+      var d = load();
+      first = String(first || '').trim(); initial = String(initial || '').trim().charAt(0);
+      if (!first) throw new Error('צריך לכתוב שם פרטי');
+      if (!d.open) return { closed: true };
+      var name = first + (initial ? ' ' + initial + '.' : ''), key = (first + '|' + initial).toLowerCase();
+      for (var i = d.attempts.length - 1; i >= 0; i--) {
+        var a = d.attempts[i];
+        if (a[2].toLowerCase() === key && a[3] === d.current && a[6] === 'active') {
+          if (!forceNew) return { attemptId: a[0], name: name, state: d['state_' + a[0]] || null, resumed: true };
+          a[6] = 'replaced';
+        }
+      }
+      var id = uid(), now = iso(Date.now());
+      d.attempts.push([id, name, key, d.current, now, now, 'active', 0]);
+      save();
+      return { attemptId: id, name: name, state: null, resumed: false };
+    },
+    studentSave: function (id, rec, state, finished) {
+      var d = load();
+      var a = d.attempts.filter(function (x) { return x[0] === id; })[0];
+      if (!a) return { error: 'not_found' };
+      if (a[3] !== d.current || !d.open) return { closed: true };
+      if (rec && rec.n > a[7]) { d.answers.push([id, rec.n, rec.t, rec.lv, rec.k, rec.c, rec.m, rec.q, rec.e, rec.a, rec.g, iso(Date.now())]); a[7] = rec.n; }
+      a[5] = iso(Date.now()); a[6] = finished ? 'done' : 'active'; d['state_' + id] = state;
+      save();
+      return { ok: true, answered: a[7] };
+    },
+    projectorStatus: function () {
+      var d = load(), j = {}, dn = {};
+      d.attempts.forEach(function (a) { if (a[3] !== d.current || a[6] === 'replaced') return; j[a[2]] = 1; if (a[6] === 'done') dn[a[2]] = 1; });
+      return { open: d.open, sessionLabel: cur().label, joined: Object.keys(j).length, done: Object.keys(dn).length, url: URL };
+    },
+    teacherLogin: function (code) { auth(code); return { ok: true }; },
+    teacherGet: function (code) {
+      auth(code); var d = load();
+      return { sessions: d.sessions, current: d.current, open: d.open, sessionLabel: cur().label,
+        attempts: d.attempts.filter(function (a) { return a[6] !== 'replaced'; }), answers: d.answers, sheetUrl: '', url: URL };
+    },
+    teacherSetOpen: function (code, open) { auth(code); var d = load(); d.open = !!open; save(); return { ok: true, open: d.open }; },
+    teacherNewSession: function (code, label) {
+      auth(code); var d = load(), id = 'S-' + uid();
+      d.sessions.push({ id: id, label: String(label || '').trim() || 'סבב חדש', created: iso(Date.now()) });
+      d.current = id; d.open = true; save();
+      return { ok: true, id: id };
+    },
+    teacherExport: function (code) { auth(code); return { preview: true }; }
+  };
+})();
+</script>
+<script>
+/* ===== מסע המרובעים – ממשק ===== */
+(function () {
+  'use strict';
+  var HAS_GAS = typeof google !== 'undefined' && google.script && google.script.run;
+  var API_URL = (!HAS_GAS && window.MJ_API) || '';
+  var LIVE = !!(HAS_GAS || API_URL);
+  function selfUrl() { return location.origin + location.pathname; }
+  var view = document.getElementById('view');
+  var TOPIC_CLS = { G: 'tG', A: 'tA', B: 'tB', C: 'tC', D: 'tD' };
+  var TOPIC_VAR = { G: 'var(--tG)', A: 'var(--tA)', B: 'var(--tB)', C: 'var(--tC)', D: 'var(--tD)' };
+  var esc = FR.esc;
+
+  /* ---------- שרת ---------- */
+  function api(fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return new Promise(function (resolve, reject) {
+      if (API_URL) {
+        // בקשה אנונימית: בלי עוגיות, ולכן החשבון של הילד בטלפון לא משנה
+        fetch(API_URL, { method: 'POST', credentials: 'omit', redirect: 'follow', cache: 'no-store',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args }) })
+          .then(function (r) { if (!r.ok) throw new Error('שגיאת שרת (' + r.status + ')'); return r.json(); })
+          .then(function (j) {
+            if (!j || !j.ok) throw new Error((j && j.error) || 'שגיאה');
+            var res = j.result;
+            if (res && typeof res === 'object' && 'url' in res) res.url = selfUrl();
+            resolve(res);
+          })
+          .catch(function (e) { reject(e && e.message ? e : new Error('אין חיבור לשרת')); });
+        return;
+      }
+      if (HAS_GAS) {
+        var r = google.script.run.withSuccessHandler(resolve).withFailureHandler(function (e) { reject(e); });
+        r[fn].apply(r, args);
+      } else {
+        try { Promise.resolve(MOCK[fn].apply(null, args)).then(resolve, reject); } catch (e) { reject(e); }
+      }
+    });
+  }
+  function errMsg(e) { return (e && (e.message || e)) || 'שגיאה'; }
+
+  /* ---------- אחסון מקומי (בטוח) ---------- */
+  function lsGet(k) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } }
+  function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+  function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+  function ssSet(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* ignore */ } }
+
+  var toastT;
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 2600);
+  }
+  function copyText(txt) {
+    try {
+      navigator.clipboard.writeText(txt).then(function () { toast('הקישור הועתק'); }, function () { toast('סמנו את הקישור והעתיקו ידנית'); });
+    } catch (e) { toast('סמנו את הקישור והעתיקו ידנית'); }
+  }
+
+  /* ---------- הקראה ---------- */
+  var SPEECH = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
+  var heVoice = null;
+  function findVoice() {
+    if (!SPEECH) return;
+    var vs = speechSynthesis.getVoices() || [];
+    heVoice = vs.filter(function (v) { return /^he|^iw/i.test(v.lang); })[0] || null;
+  }
+  if (SPEECH) { findVoice(); try { speechSynthesis.onvoiceschanged = findVoice; } catch (e) { /* ignore */ } }
+  function speak(text, btn) {
+    if (!SPEECH) return;
+    try {
+      if (speechSynthesis.speaking) { speechSynthesis.cancel(); if (btn) btn.classList.remove('on'); return; }
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = 'he-IL'; u.rate = 0.9;
+      if (heVoice) u.voice = heVoice;
+      if (btn) { btn.classList.add('on'); u.onend = u.onerror = function () { btn.classList.remove('on'); }; }
+      speechSynthesis.speak(u);
+    } catch (e) { /* ignore */ }
+  }
+  function stopSpeech() { if (SPEECH) try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } }
+  var SPEAKER = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+
+  /* ---------- ניתוב ---------- */
+  var MODE = 'student', BOOT = null;
+  function start() {
+    if (HAS_GAS) {
+      google.script.url.getLocation(function (loc) {
+        var p = (loc.parameter && loc.parameter.page) || '';
+        MODE = p === 'teacher' ? 'teacher' : p === 'projector' ? 'projector' : 'student';
+        boot();
+      });
+    } else if (API_URL) {
+      var pg = '';
+      try { pg = new URLSearchParams(location.search).get('page') || ''; } catch (e) { pg = ''; }
+      MODE = pg === 'teacher' ? 'teacher' : pg === 'projector' ? 'projector' : 'student';
+      boot();
+    } else {
+      var h = (location.hash || '').replace('#', '');
+      MODE = h === 'teacher' ? 'teacher' : h === 'projector' ? 'projector' : 'student';
+      renderPreviewBar();
+      boot();
+    }
+  }
+  function boot() {
+    api('getBoot').then(function (b) { BOOT = b; route(); }, function (e) {
+      view.innerHTML = '<div class="wrap"><div class="card endcard"><h2>אין חיבור לשרת</h2><p>' + esc(errMsg(e)) + '</p><button class="btn primary" id="rb">לנסות שוב</button></div></div>';
+      document.getElementById('rb').onclick = boot;
+    });
+  }
+  function route() {
+    clearInterval(T.poll); clearInterval(P.poll); stopSpeech();
+    if (MODE === 'teacher') teacherStart();
+    else if (MODE === 'projector') projectorStart();
+    else studentWelcome();
+  }
+  function renderPreviewBar() {
+    var bar = document.getElementById('pbar');
+    bar.hidden = false;
+    bar.innerHTML = '<span><strong>תצוגה מקדימה.</strong> הנתונים כאן לדוגמה ונשמרים רק בדפדפן הזה. קוד מורה לדוגמה: <strong dir="ltr">1234</strong></span>' +
+      '<span class="tabs" role="group" aria-label="מסך">' +
+      ['student:ילד', 'teacher:מורה', 'projector:מקרן'].map(function (x) { var p = x.split(':'); return '<button type="button" data-m="' + p[0] + '" aria-pressed="' + (MODE === p[0]) + '">' + p[1] + '</button>'; }).join('') +
+      '</span><button type="button" class="btn sm" id="pv-reset">איפוס נתוני הדוגמה</button>';
+    bar.querySelectorAll('[data-m]').forEach(function (b) {
+      b.onclick = function () {
+        MODE = b.getAttribute('data-m');
+        bar.querySelectorAll('[data-m]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        route();
+      };
+    });
+    document.getElementById('pv-reset').onclick = function () { MOCK._reset(); lsDel('mq_att'); toast('נתוני הדוגמה אופסו'); boot(); };
+  }
+
+  /* =====================================================
+     תלמיד
+     ===================================================== */
+  var S = { attemptId: null, name: '', state: null, q: null, answer: null, pending: [], busy: false };
+
+  function logoSVG(all) {
+    return '<svg class="logo" viewBox="0 0 120 72" aria-hidden="true">' +
+      '<path class="pt on" d="M6,60 L16,14 L40,14 L30,60 Z"/><path class="pt on" d="M44,60 L50,16 L74,26 L66,58 Z"/>' +
+      '<path class="pt on" d="M80,40 L92,12 L104,40 L92,62 Z"/><path class="pt' + (all ? ' on' : '') + '" d="M106,60 L108,22 L118,30 L116,60 Z"/></svg>';
+  }
+
+  function studentWelcome(msg) {
+    var saved = lsGet('mq_name') || {};
+    var closed = BOOT && !BOOT.open;
+    view.innerHTML =
+      '<div class="wrap">' +
+      '<header class="brand">' + logoSVG() + '<h1>מסע המרובעים</h1><p>30 שאלות על צורות ומרובעים. עונים בקצב שלכם, ואין צורך למהר.</p></header>' +
+      (closed ? '<div class="card endcard"><h2>הבדיקה סגורה כרגע</h2><p>חכו שהמורה יפתח את הבדיקה ונסו שוב.</p><button class="btn primary" id="retry">לנסות שוב</button></div>' :
+      '<form class="card startform" id="fstart" novalidate>' +
+      '<div class="field"><label for="first">שם פרטי</label><input type="text" id="first" autocomplete="given-name" maxlength="20" value="' + esc(saved.first || '') + '"></div>' +
+      '<div class="field"><label for="last">האות הראשונה של שם המשפחה</label><input type="text" id="last" maxlength="1" value="' + esc(saved.last || '') + '"></div>' +
+      '<p class="err" id="ferr"' + (msg ? '' : ' hidden') + '>' + esc(msg || '') + '</p>' +
+      '<button class="btn primary big" id="go" type="submit">יוצאים למסע</button>' +
+      '</form>') +
+      '</div>';
+    if (closed) { document.getElementById('retry').onclick = boot; return; }
+    document.getElementById('fstart').onsubmit = function (e) {
+      e.preventDefault();
+      var first = document.getElementById('first').value.trim(), last = document.getElementById('last').value.trim();
+      var er = document.getElementById('ferr');
+      if (!first) { er.textContent = 'כתבו את השם הפרטי שלכם.'; er.hidden = false; return; }
+      if (!last) { er.textContent = 'כתבו את האות הראשונה של שם המשפחה.'; er.hidden = false; return; }
+      lsSet('mq_name', { first: first, last: last });
+      var btn = document.getElementById('go'); btn.disabled = true; btn.textContent = 'רגע…';
+      studentBegin(first, last, false);
+    };
+  }
+
+  function studentBegin(first, last, forceNew) {
+    api('studentStart', first, last, forceNew).then(function (r) {
+      if (r.closed) { BOOT.open = false; return studentWelcome(); }
+      var local = lsGet('mq_att');
+      var state = r.state;
+      var pending = [];
+      if (local && local.attemptId === r.attemptId && local.state && (!state || local.state.n > state.n)) { state = local.state; pending = local.pending || []; }
+      S.attemptId = r.attemptId; S.name = r.name; S.state = state || FR.newState(); S.pending = pending;
+      if (r.resumed && S.state.n > 0 && !forceNew) return studentResume(first, last);
+      persist(); flush(); nextQ();
+    }, function (e) { studentWelcome(errMsg(e)); });
+  }
+
+  function studentResume(first, last) {
+    view.innerHTML = '<div class="wrap"><div class="card endcard">' +
+      '<h2>שלום ' + esc(S.name) + '!</h2>' +
+      '<p>כבר התחלתם את המסע. עניתם על ' + S.state.n + ' מתוך ' + FR.total + ' שאלות.</p>' +
+      '<button class="btn primary big" id="cont">ממשיכים מאיפה שעצרנו</button>' +
+      '<button class="btn" id="fresh">זה לא אני – מתחילים בדיקה חדשה</button>' +
+      '</div></div>';
+    document.getElementById('cont').onclick = function () { persist(); flush(); nextQ(); };
+    document.getElementById('fresh').onclick = function () { lsDel('mq_att'); studentBegin(first, last, true); };
+  }
+
+  function persist() { lsSet('mq_att', { attemptId: S.attemptId, state: S.state, pending: S.pending }); }
+
+  function flush() {
+    if (S.busy || !S.pending.length) return Promise.resolve();
+    S.busy = true;
+    var item = S.pending[0];
+    return api('studentSave', S.attemptId, item.rec, item.state, item.done).then(function (r) {
+      S.busy = false;
+      if (r && r.closed) { setStatus('הבדיקה נסגרה. התשובות שלכם שמורות.', true); BOOT.open = false; if (item.done) return; return showClosedMid(); }
+      S.pending.shift(); persist(); setStatus('');
+      return flush();
+    }, function () {
+      S.busy = false;
+      setStatus('אין חיבור כרגע. התשובות נשמרות בטלפון ויישלחו כשהחיבור יחזור.', true);
+      setTimeout(flush, 5000);
+    });
+  }
+  function setStatus(t, warn) { var el = document.getElementById('sline'); if (el) { el.textContent = t; el.className = 'status-line' + (warn ? ' warn' : ''); } }
+
+  function showClosedMid() {
+    view.innerHTML = '<div class="wrap"><div class="card endcard"><h2>הבדיקה נסגרה</h2><p>התשובות שלכם שמורות. כשהמורה יפתח שוב, תוכלו להמשיך מאותה נקודה.</p><button class="btn primary" id="back">חזרה למסך הכניסה</button></div></div>';
+    document.getElementById('back').onclick = boot;
+  }
+
+  function trailHTML(s) {
+    var h = '<div class="trail" aria-hidden="true">';
+    var off = 0;
+    FR.TOPICS.forEach(function (t) {
+      h += '<span class="seg ' + TOPIC_CLS[t] + '">';
+      var base = off; off += FR.TOPIC_N[t];
+      for (var i = 0; i < FR.TOPIC_N[t]; i++) {
+        var idx = base + i;
+        h += '<i class="' + (idx < s.n ? 'd' : '') + (idx === s.n ? ' cur' : '') + '"></i>';
+      }
+      h += '</span>';
+    });
+    return h + '</div>';
+  }
+
+  function nextQ() {
+    stopSpeech();
+    if (FR.done(S.state)) return studentDone();
+    S.q = FR.nextQuestion(S.state); S.answer = null;
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    var q = S.q, t = q.topic, info = FR.TOPIC_INFO[t];
+    var h = '<div class="wrap">' +
+      '<div class="topline"><span class="chip ' + TOPIC_CLS[t] + '"><span class="dot"></span><span>' + esc(info.name) + '</span></span>' +
+      '<span class="count">שאלה ' + (S.state.n + 1) + ' מתוך ' + FR.total + '</span></div>' +
+      trailHTML(S.state) +
+      '<section class="card qcard" aria-live="polite">' +
+      '<div class="qtext"><h2>' + FR.toHTML(q.text) + '</h2>' +
+      (SPEECH ? '<button type="button" class="say" id="say" aria-label="הקראת השאלה">' + SPEAKER + '</button>' : '') + '</div>' +
+      (q.hint ? '<p class="hint">' + esc(q.hint) + '</p>' : '');
+    var defs = !q.noDefs && q.terms && q.terms.length;
+    if (defs) h += '<div class="defrow"><button type="button" class="btn defbtn" id="defb" aria-expanded="false" aria-controls="defs">מה זה?</button></div><div class="defs" id="defs" hidden>' +
+      q.terms.map(function (k) { var T0 = FR.TERMS[k]; return '<div class="def">' + FR.TERM_SVG[k] + '<div><b>' + esc(T0.name) + '</b>' + FR.toHTML(T0.def) + '</div></div>'; }).join('') + '</div>';
+    if (q.kind === 'line') h += '<div class="visual" id="vis">' + lineMarkup(q.max, q.seg) + '</div>';
+    else if (q.kind === 'tapside') h += '<div class="visual" id="vis">' + FR.polySVG(q.pts, { red: q.red, hit: true, tools: !!(q.tools && q.tools.length) }) + '</div>';
+    else if (q.kind === 'dotgrid') h += '<div class="visual" id="vis"></div><div class="dgbar"><span id="dgmsg">בחרו נקודה ראשונה</span><button type="button" class="btn sm" id="dgreset">התחלה מחדש</button></div>';
+    else if (q.visual) h += '<div class="visual' + (q.kind === 'shade' ? ' tap' : '') + '" id="vis">' + q.visual + '</div>';
+    if (q.tools && q.tools.length) {
+      h += '<div class="tools">' + q.tools.map(function (tl) { return '<button type="button" class="btn tool" data-tool="' + tl + '" aria-pressed="false">' + (tl === 'extend' ? 'הארכת צלעות' : 'זווית ישרה') + '</button>'; }).join('') + '</div>' +
+        '<p class="toolnote" id="tnote" hidden></p>';
+    }
+    if (q.kind === 'pick') {
+      h += '<div class="picks" role="group" aria-label="צורות">' + q.items.map(function (it, i) { return '<button type="button" class="pickt" data-i="' + i + '" aria-pressed="false" aria-label="צורה ' + (i + 1) + '"><span class="ck" aria-hidden="true">✓</span>' + it.svg + '</button>'; }).join('') + '</div>';
+    }
+    if (q.kind === 'shade') h += '<p class="tally" id="tally">עדיין לא צבעתם</p>';
+    if (q.kind === 'mc') {
+      h += '<div class="opts' + (q.one ? ' one' : '') + '" role="group" aria-label="אפשרויות">';
+      q.options.forEach(function (o, i) {
+        h += '<button type="button" class="opt' + (q.svgOptions ? ' svgopt' : '') + '" data-i="' + i + '" aria-pressed="false"' + (q.svgOptions ? ' aria-label="' + esc(o.desc) + '"' : '') + '>' + (q.svgOptions ? o.svg : FR.toHTML(o.label)) + '</button>';
+      });
+      h += '</div>';
+    }
+    if (q.kind === 'frac') {
+      h += '<div class="fin"><div class="fstack" dir="ltr"><input id="fn" inputmode="numeric" pattern="[0-9]*" maxlength="3" class="numin" aria-label="מונה" autocomplete="off"><span class="bar"></span><input id="fd" inputmode="numeric" pattern="[0-9]*" maxlength="3" class="numin" aria-label="מכנה" autocomplete="off"></div></div>';
+    }
+    if (q.kind === 'int') {
+      h += '<div class="fin"><input id="iv" inputmode="numeric" pattern="[0-9]*" maxlength="4" class="numin" style="width:130px!important" aria-label="התשובה" autocomplete="off"></div>';
+    }
+    h += '<button type="button" class="btn primary big" id="next" disabled>' + (S.state.n + 1 === FR.total ? 'סיום המסע' : 'לשאלה הבאה') + '</button>' +
+      '<p class="status-line" id="sline"></p></section></div>';
+    view.innerHTML = h;
+    window.scrollTo(0, 0);
+
+    var nextBtn = document.getElementById('next');
+    function ready(ok) { nextBtn.disabled = !ok; }
+    var say = document.getElementById('say');
+    if (say) say.onclick = function () { speak(speechFor(q), say); };
+
+    if (q.kind === 'mc') {
+      view.querySelectorAll('.opt').forEach(function (b) {
+        b.onclick = function () {
+          view.querySelectorAll('.opt').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          b.setAttribute('aria-pressed', 'true'); S.answer = +b.getAttribute('data-i'); ready(true);
+        };
+      });
+    } else if (q.kind === 'tapside') {
+      bindTapSide(document.querySelector('#vis svg'), q, ready);
+    } else if (q.kind === 'pick') {
+      var chosen = [];
+      view.querySelectorAll('.pickt').forEach(function (b) {
+        b.onclick = function () {
+          var i = +b.getAttribute('data-i'), k = chosen.indexOf(i);
+          if (k >= 0) chosen.splice(k, 1); else chosen.push(i);
+          b.setAttribute('aria-pressed', String(k < 0));
+          S.answer = chosen.slice(); ready(chosen.length > 0);
+        };
+      });
+    } else if (q.kind === 'tappts') {
+      var pts = [];
+      view.querySelectorAll('#vis .g-chit').forEach(function (c) {
+        var tog = function () {
+          var i = +c.getAttribute('data-p'), k = pts.indexOf(i);
+          if (k >= 0) pts.splice(k, 1); else pts.push(i);
+          var dotEl = c.previousElementSibling; if (dotEl) dotEl.classList.toggle('on', k < 0);
+          S.answer = pts.slice(); ready(pts.length > 0);
+        };
+        c.addEventListener('click', tog);
+        c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } });
+      });
+    } else if (q.kind === 'dotgrid') {
+      bindDotGrid(q, ready);
+    } else if (q.kind === 'shade') {
+      bindShade(document.getElementById('vis'), ready, q);
+    } else if (q.kind === 'line') {
+      bindLine(document.querySelector('#vis svg'), q, ready);
+    } else if (q.kind === 'frac') {
+      var fn = document.getElementById('fn'), fd = document.getElementById('fd');
+      var upd = function () {
+        fn.value = fn.value.replace(/\D/g, ''); fd.value = fd.value.replace(/\D/g, '');
+        var ok = fn.value !== '' && fd.value !== '' && +fd.value > 0;
+        S.answer = ok ? [+fn.value, +fd.value] : null; ready(ok);
+      };
+      fn.oninput = fd.oninput = upd;
+      fn.onkeydown = function (e) { if (e.key === 'Enter') fd.focus(); };
+      fd.onkeydown = function (e) { if (e.key === 'Enter' && !nextBtn.disabled) nextBtn.click(); };
+    } else if (q.kind === 'int') {
+      var iv = document.getElementById('iv');
+      iv.oninput = function () { iv.value = iv.value.replace(/\D/g, ''); S.answer = iv.value === '' ? null : +iv.value; ready(iv.value !== ''); };
+      iv.onkeydown = function (e) { if (e.key === 'Enter' && !nextBtn.disabled) nextBtn.click(); };
+    }
+    nextBtn.onclick = submitAnswer;
+    if (S.pending.length) setStatus('שולח תשובות קודמות…');
+    bindExtras(q);
+  }
+
+  function bindExtras(q) {
+    var db = document.getElementById('defb');
+    if (db) db.onclick = function () {
+      var p = document.getElementById('defs'), open = p.hidden;
+      p.hidden = !open; db.setAttribute('aria-expanded', String(open));
+      if (open) q.usedDef = true;
+    };
+    var svg = document.querySelector('#vis svg.geo');
+    view.querySelectorAll('.tool').forEach(function (b) {
+      b.onclick = function () {
+        var on = b.getAttribute('aria-pressed') !== 'true', tl = b.getAttribute('data-tool');
+        b.setAttribute('aria-pressed', String(on));
+        if (on) q.usedTool = true;
+        var note = document.getElementById('tnote');
+        if (!svg) return;
+        if (tl === 'extend') {
+          var g = svg.querySelector('.g-ext'); if (g) { if (on) g.removeAttribute('hidden'); else g.setAttribute('hidden', 'hidden'); }
+        } else {
+          svg.querySelectorAll('.g-vhit').forEach(function (c) { if (on) c.removeAttribute('hidden'); else c.setAttribute('hidden', 'hidden'); });
+          if (!on) svg.querySelector('.g-ra').innerHTML = '';
+          if (note) { note.hidden = !on; note.textContent = 'לחצו על קודקוד כדי להניח בו זווית ישרה.'; }
+        }
+      };
+    });
+    if (svg) svg.querySelectorAll('.g-vhit').forEach(function (c) {
+      var put = function (e) { if (e) e.stopPropagation(); svg.querySelector('.g-ra').innerHTML = FR.rightAngleAt(q.pts, +c.getAttribute('data-v')); q.usedTool = true; };
+      c.addEventListener('click', put);
+      c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); put(); } });
+    });
+  }
+
+  function bindTapSide(svg, q, ready) {
+    var sel = [];
+    function paint() {
+      svg.querySelectorAll('.g-sd').forEach(function (p) { var s = +p.getAttribute('data-s'); p.classList.toggle('sel', sel.indexOf(s) >= 0); });
+      S.answer = sel.slice(); ready(sel.length > 0);
+    }
+    svg.querySelectorAll('.g-hit').forEach(function (h) {
+      var tog = function () {
+        var s = +h.getAttribute('data-s'), k = sel.indexOf(s);
+        if (q.multi) { if (k >= 0) sel.splice(k, 1); else sel.push(s); }
+        else sel = k >= 0 ? [] : [s];
+        paint();
+      };
+      h.addEventListener('click', tog);
+      h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } });
+    });
+  }
+
+  function bindDotGrid(q, ready) {
+    var box = document.getElementById('vis'), msg = document.getElementById('dgmsg'), picks = [];
+    var N = FR.GRID, W = FR.GO * 2 + FR.GS * (N - 1);
+    function key(c) { return c[0] + ',' + c[1]; }
+    var segKeys = [key(q.seg[0]), key(q.seg[1])];
+    function draw() {
+      var A = q.seg[0], B = q.seg[1], P = [B].concat(picks), s = '<svg class="dgrid" viewBox="0 0 ' + W + ' ' + W + '" role="group" aria-label="לוח נקודות">';
+      if (picks.length === 2) s += '<polygon class="dg-poly" points="' + [A, B, picks[0], picks[1]].map(function (c) { return FR.gxy(c).join(','); }).join(' ') + '"/>';
+      for (var i = 0; i + 1 < P.length; i++) { var a = FR.gxy(P[i]), b = FR.gxy(P[i + 1]); s += '<line class="dg-ln" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '"/>'; }
+      if (picks.length === 2) { var c1 = FR.gxy(picks[1]), c2 = FR.gxy(A); s += '<line class="dg-ln" x1="' + c1[0] + '" y1="' + c1[1] + '" x2="' + c2[0] + '" y2="' + c2[1] + '"/>'; }
+      var a0 = FR.gxy(A), b0 = FR.gxy(B);
+      s += '<line class="dg-seg" x1="' + a0[0] + '" y1="' + a0[1] + '" x2="' + b0[0] + '" y2="' + b0[1] + '"/>';
+      for (var y = 0; y < N; y++) for (var x = 0; x < N; x++) {
+        var g = FR.gxy([x, y]), k = x + ',' + y, isEnd = segKeys.indexOf(k) >= 0, pi = picks.map(key).indexOf(k);
+        s += '<circle class="' + (isEnd ? 'dg-end' : pi >= 0 ? 'dg-pick' : 'dg-dot') + '" cx="' + g[0] + '" cy="' + g[1] + '" r="' + (isEnd || pi >= 0 ? 9 : 5) + '"/>';
+        if (!isEnd) s += '<circle class="dg-hit" data-x="' + x + '" data-y="' + y + '" cx="' + g[0] + '" cy="' + g[1] + '" r="24" tabindex="0" role="button" aria-label="נקודה ' + (y * N + x + 1) + '"/>';
+      }
+      box.innerHTML = s + '</svg>';
+      msg.textContent = picks.length === 0 ? 'בחרו נקודה ראשונה' : picks.length === 1 ? 'בחרו נקודה שנייה' : 'המרובע מוכן. אפשר לשנות בלחיצה על נקודה אחרת';
+      box.querySelectorAll('.dg-hit').forEach(function (h) {
+        var tap = function () {
+          var c = [+h.getAttribute('data-x'), +h.getAttribute('data-y')], k = picks.map(key).indexOf(key(c));
+          if (k >= 0) picks.splice(k, 1);
+          else if (picks.length < 2) picks.push(c);
+          else picks[1] = c;
+          S.answer = picks.length === 2 ? [picks[0], picks[1]] : null; ready(picks.length === 2);
+          draw();
+        };
+        h.addEventListener('click', tap);
+        h.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(); } });
+      });
+    }
+    document.getElementById('dgreset').onclick = function () { picks = []; S.answer = null; ready(false); draw(); };
+    draw();
+  }
+
+  function speechFor(q) {
+    var t = FR.toSpeech(q.text);
+    if (q.hint) t += '. ' + q.hint;
+    if (q.kind === 'mc' && !q.svgOptions) t += '. האפשרויות: ' + q.options.map(function (o) { return FR.toSpeech(o.label); }).join(', ');
+    if (q.kind === 'mc' && q.svgOptions) t += '. בחרו את הצורה המתאימה.';
+    if (q.kind === 'tapside') t += q.multi ? '. לחצו על הצלעות בציור.' : '. לחצו על צלע בציור.';
+    if (q.kind === 'pick') t += '. אפשר לבחור יותר מצורה אחת.';
+    if (q.kind === 'tappts') t += '. לחצו על הנקודות בציור.';
+    if (q.kind === 'dotgrid') t += '. הקטע האדום הוא צלע אחת. לחצו על שתי נקודות כדי להשלים את המרובע.';
+    if (q.kind === 'int') t += '. כתבו מספר.';
+    return t;
+  }
+
+  function lineMarkup(max, seg) {
+    var L = FR.LINE, unit = (L.x1 - L.x0) / max;
+    var s = '<svg class="nline tap" viewBox="0 0 ' + L.W + ' ' + L.H + '" dir="ltr" tabindex="0" role="slider" aria-label="ישר מספרים – בחרו מקום" aria-valuemin="0" aria-valuemax="' + max + '">';
+    s += '<rect x="0" y="0" width="' + L.W + '" height="' + L.H + '" fill="transparent"/>';
+    s += '<line class="ax" x1="' + (L.x0 - 12) + '" y1="' + L.y + '" x2="' + (L.x1 + 12) + '" y2="' + L.y + '"/>';
+    if (seg) for (var k = 0; k <= max * seg; k++) {
+      var x = L.x0 + k * unit / seg, mj = k % seg === 0;
+      s += '<line class="tk' + (mj ? ' mj' : '') + '" x1="' + x + '" y1="' + (L.y - (mj ? 14 : 9)) + '" x2="' + x + '" y2="' + (L.y + (mj ? 14 : 9)) + '"/>';
+    }
+    for (var u = 0; u <= max; u++) {
+      var xu = L.x0 + u * unit;
+      if (!seg) s += '<line class="tk mj" x1="' + xu + '" y1="' + (L.y - 14) + '" x2="' + xu + '" y2="' + (L.y + 14) + '"/>';
+      s += '<text class="lb" x="' + xu + '" y="' + (L.y + 36) + '" text-anchor="middle">' + u + '</text>';
+    }
+    s += '<g class="mk" hidden="hidden"><path d="M0,-30 L-10,-46 L10,-46 Z"/><line x1="0" y1="-30" x2="0" y2="0"/><circle r="7"/></g>';
+    return s + '</svg>';
+  }
+
+  function bindShade(box, ready, q) {
+    var tally = document.getElementById('tally');
+    var parts = box.querySelectorAll('.pt:not(.pre)');
+    var noun = q.topic === 'D' ? ['סימנתם', 'עיגול אחד', 'עיגולים'] : ['צבעתם', 'חלק אחד', 'חלקים'];
+    function update() {
+      var c = box.querySelectorAll('.pt.on:not(.pre)').length;
+      S.answer = c; ready(c > 0);
+      tally.textContent = c === 0 ? (q.topic === 'D' ? 'עדיין לא סימנתם' : 'עדיין לא צבעתם') : noun[0] + ' ' + (c === 1 ? noun[1] : c + ' ' + noun[2]);
+    }
+    parts.forEach(function (p) {
+      p.setAttribute('tabindex', '0'); p.setAttribute('role', 'button');
+      var tog = function () { p.classList.toggle('on'); update(); };
+      p.addEventListener('click', tog);
+      p.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } });
+    });
+  }
+
+  function bindLine(svg, q, ready) {
+    var L = FR.LINE, mk = svg.querySelector('.mk'), drag = false, v = null;
+    function place(val) {
+      val = Math.max(0, Math.min(q.max, val));
+      if (q.snap && q.seg) val = Math.round(val * q.seg) / q.seg;
+      else val = Math.round(val * 100) / 100;
+      v = val; S.answer = val;
+      var x = L.x0 + val * (L.x1 - L.x0) / q.max;
+      mk.setAttribute('transform', 'translate(' + x + ',' + L.y + ')');
+      mk.removeAttribute('hidden');
+      svg.setAttribute('aria-valuenow', String(val));
+      ready(true);
+    }
+    function fromEvt(e) {
+      var r = svg.getBoundingClientRect();
+      var xvb = (e.clientX - r.left) / r.width * L.W;
+      return (xvb - L.x0) / (L.x1 - L.x0) * q.max;
+    }
+    svg.addEventListener('pointerdown', function (e) { drag = true; try { svg.setPointerCapture(e.pointerId); } catch (x) { /* ignore */ } place(fromEvt(e)); e.preventDefault(); });
+    svg.addEventListener('pointermove', function (e) { if (drag) place(fromEvt(e)); });
+    svg.addEventListener('pointerup', function () { drag = false; });
+    svg.addEventListener('pointercancel', function () { drag = false; });
+    svg.addEventListener('keydown', function (e) {
+      var step = q.snap && q.seg ? 1 / q.seg : 0.02;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { place((v == null ? 0 : v) + step); e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { place((v == null ? 0 : v) - step); e.preventDefault(); }
+    });
+  }
+
+  function submitAnswer() {
+    var q = S.q;
+    if (S.answer == null) return;
+    var res = FR.classify(q, S.answer);
+    var rec = FR.record(q, res, S.state.n + 1);
+    rec.mn = rec.m && FR.MIS[rec.m] ? FR.MIS[rec.m].name : '';
+    FR.applyAnswer(S.state, q, res);
+    var fin = FR.done(S.state);
+    S.pending.push({ rec: rec, state: JSON.parse(JSON.stringify(S.state)), done: fin });
+    persist();
+    flush();
+    nextQ();
+  }
+
+  function studentDone() {
+    view.innerHTML = '<div class="wrap">' + trailHTML(S.state) +
+      '<div class="card endcard">' + logoSVG(true) +
+      '<h2>סיימתם את המסע!</h2><p>כל הכבוד ' + esc(S.name) + '. התשובות נשלחו למורה. אפשר לסגור את הדף.</p>' +
+      '<p class="status-line" id="sline"></p></div></div>';
+    if (S.pending.length) { setStatus('שולח את התשובות האחרונות…'); }
+    (function waitSaved() { if (!S.pending.length) { setStatus('כל התשובות נשמרו.'); lsDel('mq_att'); return; } flush(); setTimeout(waitSaved, 700); })();
+  }
+
+  /* =====================================================
+     מורה
+     ===================================================== */
+  var T = { code: null, data: null, scope: 'current', openDetails: {}, openRows: {}, poll: null, sig: '', showNew: false, exportLinks: null };
+
+  function teacherStart() {
+    var c = ssGet('mq_tcode');
+    if (c) { T.code = c; return teacherLoad(true); }
+    teacherLogin();
+  }
+  function teacherLogin(msg) {
+    view.innerHTML = '<div class="wrap"><header class="brand">' + logoSVG() + '<h1>מסך מורה</h1><p>מסע המרובעים</p></header>' +
+      '<form class="card startform" id="tlog" novalidate><div class="field"><label for="tcode">קוד מורה</label><input type="password" id="tcode" autocomplete="current-password" inputmode="numeric"></div>' +
+      '<p class="err" id="terr"' + (msg ? '' : ' hidden') + '>' + esc(msg || '') + '</p><button class="btn primary big" type="submit">כניסה</button></form></div>';
+    document.getElementById('tlog').onsubmit = function (e) {
+      e.preventDefault();
+      var code = document.getElementById('tcode').value.trim();
+      api('teacherLogin', code).then(function () { T.code = code; ssSet('mq_tcode', code); teacherLoad(true); }, function (er) { teacherLogin(errMsg(er)); });
+    };
+  }
+  function teacherLoad(first) {
+    return api('teacherGet', T.code).then(function (d) {
+      if (!d || !d.attempts) { toast('השרת החזיר תשובה ריקה. נסו לרענן.'); if (first) teacherLogin('לא הצלחנו לטעון את הנתונים. נסו שוב.'); return; }
+      try {
+      var sig = d.attempts.length + ':' + d.answers.length + ':' + d.open + ':' + d.current + ':' + d.sessions.length + ':' + d.attempts.map(function (a) { return a[5]; }).join('');
+      T.data = d;
+      if (first || sig !== T.sig) { T.sig = sig; renderTeacher(); }
+      if (first) {
+        clearInterval(T.poll);
+        T.poll = setInterval(function () { if (!document.hidden && MODE === 'teacher') teacherLoad(false); }, 15000);
+      }
+      } catch (err) { toast('שגיאה בהצגת הנתונים: ' + errMsg(err)); if (first) teacherLogin('שגיאה בהצגת הנתונים: ' + errMsg(err)); }
+    }, function (e) {
+      var m = errMsg(e);
+      if (/קוד/.test(m)) { try { sessionStorage.removeItem('mq_tcode'); } catch (x) { /* ignore */ } return teacherLogin(m); }
+      toast('לא הצלחנו לרענן: ' + m);
+    });
+  }
+
+  function attObjs(d) {
+    return d.attempts.map(function (r) { return { id: r[0], name: r[1], key: r[2], sessionId: r[3], started: r[4], updated: r[5], status: r[6], answered: r[7] }; });
+  }
+  function ansObjs(d) {
+    return d.answers.map(function (r) { return { id: r[0], n: +r[1], t: r[2], lv: +r[3], k: r[4], c: +r[5] ? 1 : 0, m: r[6], q: r[7], e: r[8], a: r[9], g: r[10], ts: r[11] }; });
+  }
+  function latestPerStudent(atts) {
+    var by = {};
+    atts.forEach(function (a) { if (!by[a.key] || a.started > by[a.key].started) by[a.key] = a; });
+    return Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return a.name.localeCompare(b.name, 'he'); });
+  }
+  function fmtDate(iso) { if (!iso) return ''; var d = new Date(iso); if (isNaN(d)) return ''; return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) + ' ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }); }
+  function scCls(c, a) { if (!a) return 'n'; var p = c / a; return p >= 0.8 ? 'g' : p >= 0.6 ? 'm' : 'b'; }
+
+  function currentView() {
+    var d = T.data, atts = attObjs(d), ans = ansObjs(d);
+    var scopeId = T.scope === 'current' ? d.current : T.scope;
+    var inScope = scopeId === 'all' ? atts : atts.filter(function (a) { return a.sessionId === scopeId; });
+    var chosen = latestPerStudent(inScope);
+    var A = FR.analyze(chosen, ans);
+    return { atts: atts, ans: ans, A: A, scopeId: scopeId, chosen: chosen };
+  }
+
+  function renderTeacher() {
+    var d = T.data, cv = currentView(), A = cv.A;
+    var sesLabel = function (s) { return (s.label || s.id) + (s.created ? ' · ' + fmtDate(s.created) : ''); };
+    var studentsN = A.students.length, doneN = A.students.filter(function (s) { return s.status === 'done'; }).length;
+    var projUrl = d.url ? d.url + '?page=projector' : '#projector';
+    var h = '<div class="wide">';
+    h += '<header class="thead"><div><h1>מסע המרובעים</h1><p class="sub">מסך מורה · ' + esc(d.sessionLabel || '') + '</p></div>' +
+      '<span class="pill ' + (d.open ? 'open' : 'closed') + '">' + (d.open ? 'הבדיקה פתוחה לתלמידים' : 'הבדיקה סגורה') + '</span></header>';
+
+    // controls
+    h += '<section class="card controls">' +
+      '<div class="ctlrow">' +
+      '<button class="btn ' + (d.open ? '' : 'primary') + '" id="t-open">' + (d.open ? 'סגירת הבדיקה' : 'פתיחת הבדיקה') + '</button>' +
+      '<button class="btn" id="t-new">סבב חדש</button>' +
+      '<a class="btn" href="' + esc(projUrl) + '" target="_blank" rel="noopener" id="t-proj">מסך מקרן</a>' +
+      '<button class="btn" id="t-exp">ייצוא לאקסל</button>' +
+      (d.sheetUrl ? '<a class="btn" href="' + esc(d.sheetUrl) + '" target="_blank" rel="noopener">פתיחת הגיליון</a>' : '') +
+      '<button class="btn" id="t-ref">רענון</button>' +
+      '</div>' +
+      (T.showNew ? '<form class="inline-form" id="t-newf"><label for="t-newl">שם הסבב</label><input type="text" id="t-newl" value="' + esc('סבב ' + new Date().toLocaleDateString('he-IL')) + '"><button class="btn primary" type="submit">פתיחת סבב חדש</button><button class="btn" type="button" id="t-newc">ביטול</button><span class="muted" style="flex-basis:100%;font-size:14px">סבב חדש מתחיל דף נקי. הסבבים הקודמים נשמרים בגיליון ובהיסטוריה.</span></form>' : '') +
+      (T.exportLinks ? '<div class="inline-form">' + (T.exportLinks.preview ? '<span>בגרסה המותקנת נוצר כאן קובץ אקסל להורדה, וגיליון "סיכום" מתעדכן ב-Google Sheets.</span>' : '<span>גיליון הסיכום עודכן.</span><a class="btn primary" href="' + esc(T.exportLinks.xlsxUrl) + '" target="_blank" rel="noopener">הורדת קובץ אקסל</a><a class="btn" href="' + esc(T.exportLinks.sheetUrl) + '" target="_blank" rel="noopener">פתיחה ב-Google Sheets</a>') + '</div>' : '') +
+      '<div class="ctlrow"><label for="t-scope" class="muted" style="font-weight:400">מציג:</label><select id="t-scope">' +
+      '<option value="current"' + (T.scope === 'current' ? ' selected' : '') + '>הסבב הנוכחי</option>' +
+      d.sessions.slice().reverse().filter(function (s) { return s.id !== d.current; }).map(function (s) { return '<option value="' + esc(s.id) + '"' + (T.scope === s.id ? ' selected' : '') + '>' + esc(sesLabel(s)) + '</option>'; }).join('') +
+      '<option value="all"' + (T.scope === 'all' ? ' selected' : '') + '>כל הסבבים (הניסיון האחרון של כל ילד)</option></select>' +
+      '<span class="summary-line">' + studentsN + ' תלמידים · ' + doneN + ' סיימו</span></div>' +
+      (d.url ? '<div class="linkbox"><span class="muted">קישור לתלמידים:</span><code id="t-url">' + esc(d.url) + '</code><button class="btn sm" id="t-copy">העתקה</button></div>' : '') +
+      '</section>';
+
+    if (!studentsN) {
+      h += '<div class="empty"><p><strong>עדיין אין תשובות בסבב הזה.</strong></p><p>פתחו את מסך המקרן, והתלמידים יסרקו את הברקוד. התוצאות יופיעו כאן תוך כמה שניות מכל תשובה.</p></div></div>';
+      view.innerHTML = h; bindTeacher(); return;
+    }
+
+    // topic cards
+    h += '<section class="kpis" aria-label="הצלחה לפי נושא">';
+    FR.TOPICS.forEach(function (t) {
+      var st = A.topicStats[t], pct = st.pct;
+      var col = pct == null ? 'var(--line)' : pct >= 80 ? 'var(--ok)' : pct >= 60 ? 'var(--warn)' : 'var(--bad)';
+      h += '<div class="tcard"><div class="tn"><span class="dot" style="background:' + TOPIC_VAR[t] + '"></span>' + esc(FR.TOPIC_INFO[t].name) + '</div>' +
+        '<div class="pct">' + (pct == null ? '–' : pct + '%') + '</div>' +
+        '<div class="meter"><span style="width:' + (pct || 0) + '%;background:' + col + '"></span></div>' +
+        '<div class="meta">' + st.correct + ' נכונות מתוך ' + st.asked + (st.avgLevel ? ' · רמה ממוצעת ' + st.avgLevel.toFixed(1) + ' מתוך 3' : '') + (t === 'G' ? ' · 10 שאלות' : '') + '</div></div>';
+    });
+    h += '</section>';
+
+    // misconceptions
+    h += '<section class="sec"><h2>טעויות נפוצות ומה עושים איתן</h2><p class="lead">מסודר לפי מספר התלמידים שטעו כך. לחצו על טעות כדי לראות הסבר, פעילות ושאלת מעקב.</p>';
+    if (!A.misList.length) h += '<div class="empty">לא נמצאו טעויות. מצוין!</div>';
+    else {
+      h += '<div class="misl">';
+      A.misList.forEach(function (m, mi) {
+        if (mi === 6) h += '<details class="more" id="mis-more"' + (T.openDetails['mis-more'] ? ' open' : '') + '><summary class="btn sm">עוד ' + (A.misList.length - 6) + ' טעויות פחות נפוצות</summary><div class="misl" style="margin-top:10px">';
+        var info = FR.MIS[m.id] || { t: m.id.charAt(0), name: m.id, explain: '', activity: '', tools: '', follow: '' };
+        var w = Math.round(100 * m.students.length / Math.max(1, studentsN));
+        var did = 'mis-' + m.id;
+        h += '<details class="mis" id="' + did + '"' + (T.openDetails[did] ? ' open' : '') + '><summary>' +
+          '<span class="chip ' + TOPIC_CLS[info.t] + '"><span class="dot"></span><span>' + esc(FR.TOPIC_INFO[info.t].short) + '</span></span>' +
+          '<span class="nm">' + esc(info.name) + '</span>' +
+          '<span class="ct">' + m.students.length + ' תלמידים · ' + m.count + ' טעויות</span>' +
+          '<span class="bar"><span style="width:' + w + '%"></span></span></summary>' +
+          '<div class="misbody">' +
+          '<div class="full"><h4>מה כנראה חושבים</h4><p>' + esc(info.explain) + '</p></div>' +
+          '<div><h4>פעילות כיתתית קצרה</h4><p>' + esc(info.activity) + '</p></div>' +
+          '<div><h4>אמצעי המחשה</h4><p>' + esc(info.tools) + '</p><h4 style="margin-top:12px">שאלת מעקב לשאול בעל פה</h4><p>' + FR.toHTML(info.follow) + '</p></div>' +
+          '<div class="full"><h4>התלמידים</h4><div class="names">' + m.students.sort(function (a, b) { return b.count - a.count; }).map(function (s) { return '<span>' + esc(s.name) + (s.count > 1 ? '<b>×' + s.count + '</b>' : '') + '</span>'; }).join('') + '</div></div>' +
+          '</div></details>';
+      });
+      if (A.misList.length > 6) h += '</div></details>';
+      h += '</div>';
+    }
+    h += '</section>';
+
+    // groups
+    var G = A.groups, groupHTML = '';
+    FR.TOPICS.forEach(function (t) {
+      if (!G[t].length) return;
+      var misCount = {};
+      G[t].forEach(function (s) { s.mis.forEach(function (m) { if (FR.MIS[m] && FR.MIS[m].t === t) misCount[m] = (misCount[m] || 0) + 1; }); });
+      var topMis = Object.keys(misCount).sort(function (a, b) { return misCount[b] - misCount[a]; }).slice(0, 2).map(function (m) { return FR.MIS[m].name; });
+      groupHTML += '<div class="group" style="--gc:' + TOPIC_VAR[t] + '"><h3>חיזוק: ' + esc(FR.TOPIC_INFO[t].name) + '</h3>' +
+        '<div class="names">' + G[t].map(function (s) { return '<span>' + esc(s.name) + '</span>'; }).join('') + '</div>' +
+        (topMis.length ? '<p><strong>במוקד:</strong> ' + esc(topMis.join(' · ')) + '</p>' : '') +
+        '<p>' + esc(FR.TOPIC_INFO[t].plan) + '</p></div>';
+    });
+    if (G.MIX.length) groupHTML += '<div class="group" style="--gc:var(--warn)"><h3>תרגול משולב</h3><div class="names">' + G.MIX.map(function (s) { return '<span>' + esc(s.name) + '</span>'; }).join('') + '</div><p>שולטים ברוב הנושאים אבל עוד לא ברמה הגבוהה. מתאים לדף תרגול שמשלב את כל הנושאים ולעבודה בזוגות על לוח נקודות.</p></div>';
+    if (G.ADV.length) groupHTML += '<div class="group" style="--gc:var(--ok)"><h3>מוכנים לאתגר</h3><div class="names">' + G.ADV.map(function (s) { return '<span>' + esc(s.name) + '</span>'; }).join('') + '</div><p>הגיעו לרמה 3 בכל הנושאים. אפשר להתקדם לזוויות במרובעים ולתכונות של המקבילית, ולבקש מהם לנסח בעצמם תנאים למרובעים.</p></div>';
+    h += '<section class="sec"><h2>קבוצות עבודה</h2><p class="lead">כל ילד משויך לנושא החלש ביותר שלו (פחות מ-60% הצלחה או ירידה לרמה 1). ילדים שענו על פחות מ-6 שאלות עוד לא משויכים.</p>' +
+      (groupHTML ? '<div class="groups">' + groupHTML + '</div>' : '<div class="empty">אין עדיין מספיק תשובות לחלוקה לקבוצות.</div>') + '</section>';
+
+    // students table
+    h += '<section class="sec"><h2>פירוט לכל תלמיד</h2><p class="lead">בכל נושא: תשובות נכונות מתוך השאלות, והרמה שבה הילד סיים (1 קלה – 3 קשה). ההצלחה ביסודות מכיתה ד׳ קבעה באיזו רמה התחיל הילד את שאר הנושאים. בעמודה "נעזר" רואים כמה פעמים פתח "מה זה?" או השתמש בכלי, וזה מידע אבחוני בפני עצמו. לחצו על שורה לפירוט התשובות.</p><div class="tblwrap"><table><thead><tr><th>שם</th><th>מצב</th>' +
+      FR.TOPICS.map(function (t) { return '<th>' + esc(FR.TOPIC_INFO[t].short) + '</th>'; }).join('') + '<th>נעזר</th><th>טעויות בולטות</th></tr></thead><tbody>';
+    A.students.forEach(function (s) {
+      var top = Object.keys(s.mis).filter(function (m) { return !/_OTHER$/.test(m); }).sort(function (a, b) { return s.mis[b] - s.mis[a]; }).slice(0, 2);
+      var rid = 'row-' + s.id;
+      h += '<tr class="srow" data-r="' + rid + '" tabindex="0" aria-expanded="' + (!!T.openRows[rid]) + '"><td class="nm">' + esc(s.name) + '</td><td><span class="st ' + (s.status === 'done' ? 'done' : 'active') + '">' + (s.status === 'done' ? 'סיים' : 'בעבודה · ' + s.total + '/' + FR.total) + '</span></td>' +
+        FR.TOPICS.map(function (t) { var T2 = s.topics[t]; return '<td>' + (T2.asked ? '<span class="sc ' + scCls(T2.correct, T2.asked) + '">' + T2.correct + '/' + T2.asked + '<small>רמה ' + T2.level + '</small></span>' : '<span class="sc n">–</span>') + (t === 'G' && s.start ? '<div class="tier">פתיחה ברמה ' + s.start + '</div>' : '') + '</td>'; }).join('') +
+        '<td class="muted" style="font-size:14px;white-space:nowrap">' + (s.defs || s.tools ? (s.defs ? 'מה זה? ×' + s.defs : '') + (s.defs && s.tools ? '<br>' : '') + (s.tools ? 'כלים ×' + s.tools : '') : '–') + '</td>' +
+        '<td>' + (top.length ? top.map(function (m) { return esc(FR.MIS[m] ? FR.MIS[m].name : m); }).join('<br>') : '<span class="muted">–</span>') + '</td></tr>';
+      if (T.openRows[rid]) h += detailRow(s, cv);
+    });
+    h += '</tbody></table></div></section>';
+    h += '</div>';
+    view.innerHTML = h;
+    bindTeacher();
+  }
+
+  function detailRow(s, cv) {
+    var hist = cv.atts.filter(function (a) { return a.key === (cv.chosen.filter(function (c) { return c.id === s.id; })[0] || {}).key; }).sort(function (a, b) { return a.started < b.started ? 1 : -1; });
+    var ansBy = {}; cv.ans.forEach(function (a) { (ansBy[a.id] = ansBy[a.id] || []).push(a); });
+    var h = '<tr class="detail"><td colspan="' + (FR.TOPICS.length + 4) + '"><div class="ansl">';
+    if (!s.answers.length) h += '<p class="muted">עוד אין תשובות.</p>';
+    s.answers.forEach(function (a) {
+      var mn = a.m && FR.MIS[a.m] ? FR.MIS[a.m].name : '';
+      h += '<div class="ans"><span class="mark ' + (a.c ? 'c' : 'w') + '">' + (a.c ? '✓' : '✗') + '</span><div>' +
+        '<div class="meta">' + a.n + ' · ' + esc(FR.TOPIC_INFO[a.t] ? FR.TOPIC_INFO[a.t].short : a.t) + ' · רמה ' + a.lv + (/\+d/.test(a.g || '') ? '<span class="tag">פתח "מה זה?"</span>' : '') + (/\+t/.test(a.g || '') ? '<span class="tag">השתמש בכלי</span>' : '') + '</div>' +
+        '<div>' + esc(a.q) + '</div>' +
+        '<div><span class="muted">תשובה נכונה:</span> <bdi>' + esc(a.e) + '</bdi> · <span class="muted">ענה:</span> <bdi>' + esc(a.a) + '</bdi>' + (mn ? ' · <span class="mtag">' + esc(mn) + '</span>' : '') + '</div>' +
+        '</div></div>';
+    });
+    if (hist.length > 1) {
+      h += '<div class="meta" style="margin-top:6px"><strong>היסטוריה:</strong> ' + hist.map(function (a) {
+        var l = ansBy[a.id] || [], c = l.filter(function (x) { return x.c; }).length;
+        return esc(fmtDate(a.started)) + ' – ' + c + '/' + l.length;
+      }).join(' · ') + '</div>';
+    }
+    return h + '</div></td></tr>';
+  }
+
+  function bindTeacher() {
+    var d = T.data;
+    var $ = function (id) { return document.getElementById(id); };
+    if ($('t-open')) $('t-open').onclick = function () {
+      this.disabled = true;
+      api('teacherSetOpen', T.code, !d.open).then(function () { toast(d.open ? 'הבדיקה נסגרה' : 'הבדיקה נפתחה'); teacherLoad(false); }, function (e) { toast(errMsg(e)); });
+    };
+    if ($('t-new')) $('t-new').onclick = function () { T.showNew = true; renderTeacher(); var i = $('t-newl'); if (i) i.focus(); };
+    if ($('t-newc')) $('t-newc').onclick = function () { T.showNew = false; renderTeacher(); };
+    if ($('t-newf')) $('t-newf').onsubmit = function (e) {
+      e.preventDefault();
+      api('teacherNewSession', T.code, $('t-newl').value).then(function () { T.showNew = false; T.scope = 'current'; T.exportLinks = null; toast('נפתח סבב חדש'); teacherLoad(true); }, function (er) { toast(errMsg(er)); });
+    };
+    if ($('t-ref')) $('t-ref').onclick = function () { teacherLoad(true); toast('עודכן'); };
+    if ($('t-copy')) $('t-copy').onclick = function () { copyText(d.url); };
+    if ($('t-proj') && !LIVE) $('t-proj').onclick = function (e) { e.preventDefault(); MODE = 'projector'; renderPreviewBar(); route(); };
+    if ($('t-scope')) $('t-scope').onchange = function () { T.scope = this.value; T.exportLinks = null; renderTeacher(); };
+    if ($('t-exp')) $('t-exp').onclick = function () {
+      var btn = this; btn.disabled = true; btn.textContent = 'מכין…';
+      var cv = currentView(), rows = exportRows(cv);
+      var title = 'מסע המרובעים – סיכום – ' + (T.scope === 'all' ? 'כל הסבבים' : (d.sessions.filter(function (s) { return s.id === cv.scopeId; })[0] || {}).label || '');
+      api('teacherExport', T.code, title, rows).then(function (r) { T.exportLinks = r; renderTeacher(); }, function (e) { btn.disabled = false; btn.textContent = 'ייצוא לאקסל'; toast(errMsg(e)); });
+    };
+    view.querySelectorAll('details.mis, details.more').forEach(function (el) { el.addEventListener('toggle', function () { T.openDetails[el.id] = el.open; }); });
+    view.querySelectorAll('tr.srow').forEach(function (tr) {
+      var tog = function () { var r = tr.getAttribute('data-r'); T.openRows[r] = !T.openRows[r]; renderTeacher(); var n = view.querySelector('tr[data-r="' + r + '"]'); if (n) n.focus(); };
+      tr.onclick = tog;
+      tr.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } };
+    });
+  }
+
+  function exportRows(cv) {
+    var A = cv.A, rows = [];
+    var head = ['שם', 'מצב', 'נכונות', 'שאלות'];
+    FR.TOPICS.forEach(function (t) { head.push(FR.TOPIC_INFO[t].short + ' – נכונות', FR.TOPIC_INFO[t].short + ' – רמה'); });
+    head.push('רמת פתיחה (לפי כיתה ד׳)', 'פתח "מה זה?"', 'השתמש בכלים', 'קבוצת עבודה', 'טעויות בולטות');
+    rows.push(head);
+    var groupOf = {};
+    FR.TOPICS.forEach(function (t) { A.groups[t].forEach(function (s) { groupOf[s.id] = 'חיזוק: ' + FR.TOPIC_INFO[t].short; }); });
+    A.groups.MIX.forEach(function (s) { groupOf[s.id] = 'תרגול משולב'; });
+    A.groups.ADV.forEach(function (s) { groupOf[s.id] = 'מוכנים לאתגר'; });
+    A.students.forEach(function (s) {
+      var r = [s.name, s.status === 'done' ? 'סיים' : 'בעבודה', s.correct, s.total];
+      FR.TOPICS.forEach(function (t) { var x = s.topics[t]; r.push(x.asked ? x.correct + '/' + x.asked : '', x.level || ''); });
+      var top = Object.keys(s.mis).filter(function (m) { return !/_OTHER$/.test(m); }).sort(function (a, b) { return s.mis[b] - s.mis[a]; }).slice(0, 3).map(function (m) { return FR.MIS[m].name; });
+      r.push(s.start || '', s.defs, s.tools, groupOf[s.id] || '', top.join('; '));
+      rows.push(r);
+    });
+    rows.push([]);
+    rows.push(['נושא', 'אחוז הצלחה', 'נכונות', 'שאלות', 'רמה ממוצעת']);
+    FR.TOPICS.forEach(function (t) { var st = A.topicStats[t]; rows.push([FR.TOPIC_INFO[t].name, st.pct == null ? '' : st.pct + '%', st.correct, st.asked, st.avgLevel ? +st.avgLevel.toFixed(1) : '']); });
+    rows.push([]);
+    rows.push(['טעות נפוצה', 'נושא', 'תלמידים', 'פעמים', 'פעילות מומלצת', 'שאלת מעקב', 'שמות']);
+    A.misList.forEach(function (m) { var i = FR.MIS[m.id]; if (!i) return; rows.push([i.name, FR.TOPIC_INFO[i.t].short, m.students.length, m.count, i.activity, FR.toPlain(i.follow), m.students.map(function (s) { return s.name; }).join(', ')]); });
+    return rows;
+  }
+
+  /* =====================================================
+     מקרן
+     ===================================================== */
+  var P = { poll: null, qrFor: '' };
+  function projectorStart() {
+    view.innerHTML = '<section class="proj"><div>' +
+      '<h1>מסע המרובעים</h1>' +
+      '<ol class="steps"><li>סורקים את הברקוד במצלמה של הטלפון</li><li>כותבים שם פרטי ואות ראשונה של שם המשפחה</li><li>עונים על 30 שאלות בקצב שלכם</li></ol>' +
+      '<div class="pcount"><div><b id="p-j">0</b><span>הצטרפו</span></div><div><b id="p-d">0</b><span>סיימו</span></div></div>' +
+      '<p id="p-st" style="margin-top:18px"></p>' +
+      '</div><div class="qrbox"><div id="qr" role="img" aria-label="ברקוד לכניסה לבדיקה"></div><p class="purl" id="p-url"></p></div></section>';
+    projectorTick();
+    clearInterval(P.poll);
+    P.poll = setInterval(function () { if (!document.hidden && MODE === 'projector') projectorTick(); }, 5000);
+  }
+  function projectorTick() {
+    api('projectorStatus').then(function (r) {
+      var j = document.getElementById('p-j'); if (!j) return;
+      j.textContent = r.joined; document.getElementById('p-d').textContent = r.done;
+      document.getElementById('p-st').innerHTML = '<span class="pill ' + (r.open ? 'open' : 'closed') + '">' + (r.open ? 'הבדיקה פתוחה' : 'הבדיקה סגורה') + '</span>';
+      var url = r.url || '';
+      document.getElementById('p-url').textContent = LIVE ? url : 'בהתקנה האמיתית הברקוד יוביל לקישור שלכם';
+      if (P.qrFor !== url) {
+        P.qrFor = url;
+        var box = document.getElementById('qr'); box.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+          try { new QRCode(box, { text: url, width: 512, height: 512, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) { box.textContent = url; }
+        } else box.textContent = url;
+      }
+    }, function () { /* ננסה שוב בסבב הבא */ });
+  }
+
+  start();
+})();
+</script>
+
+</body>
+</html>
