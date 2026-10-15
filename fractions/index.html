@@ -1074,16 +1074,29 @@ var MOCK = (function () {
     return new Promise(function (resolve, reject) {
       if (API_URL) {
         // בקשה אנונימית: בלי עוגיות, ולכן החשבון של הילד בטלפון לא משנה
-        fetch(API_URL, { method: 'POST', credentials: 'omit', redirect: 'follow', cache: 'no-store',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args }) })
-          .then(function (r) { if (!r.ok) throw new Error('שגיאת שרת (' + r.status + ')'); return r.json(); })
-          .then(function (j) {
-            if (!j || !j.ok) throw new Error((j && j.error) || 'שגיאה');
-            var res = j.result;
-            if (res && typeof res === 'object' && 'url' in res) res.url = selfUrl();
-            resolve(res);
-          })
-          .catch(function (e) { reject(e && e.message ? e : new Error('אין חיבור לשרת')); });
+        var tries = 0;
+        (function attempt() {
+          tries++;
+          var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          var timer = ctl ? setTimeout(function () { ctl.abort(); }, 30000) : null;
+          fetch(API_URL, { method: 'POST', credentials: 'omit', redirect: 'follow', cache: 'no-store', signal: ctl ? ctl.signal : undefined,
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args }) })
+            .then(function (r) { if (!r.ok) { var er = new Error('השרת עמוס (' + r.status + ')'); er.retry = r.status >= 500 || r.status === 429; throw er; } return r.json(); })
+            .then(function (j) {
+              if (timer) clearTimeout(timer);
+              if (!j || !j.ok) { var e2 = new Error((j && j.error) || 'שגיאה'); e2.retry = false; throw e2; }
+              var res = j.result;
+              if (res && typeof res === 'object' && 'url' in res) res.url = selfUrl();
+              resolve(res);
+            })
+            .catch(function (e) {
+              if (timer) clearTimeout(timer);
+              // שרת Google לפעמים איטי או עמוס – מנסים שוב, עד 3 פעמים
+              if (e && e.retry === false) return reject(e);
+              if (tries < 3) return setTimeout(attempt, 1500 * tries);
+              reject(new Error('אין חיבור לשרת כרגע'));
+            });
+        })();
         return;
       }
       if (HAS_GAS) {
@@ -1477,7 +1490,8 @@ var MOCK = (function () {
     };
   }
   function teacherLoad(first) {
-    return api('teacherGet', T.code).then(function (d) {
+    T.busy = true;
+    return api('teacherGet', T.code).then(function (d) { T.busy = false;
       if (!d || !d.attempts) { toast('השרת החזיר תשובה ריקה. נסו לרענן.'); if (first) teacherLogin('לא הצלחנו לטעון את הנתונים. נסו שוב.'); return; }
       try {
       var sig = d.attempts.length + ':' + d.answers.length + ':' + d.open + ':' + d.current + ':' + d.sessions.length + ':' + d.attempts.map(function (a) { return a[5]; }).join('');
@@ -1485,10 +1499,11 @@ var MOCK = (function () {
       if (first || sig !== T.sig) { T.sig = sig; renderTeacher(); }
       if (first) {
         clearInterval(T.poll);
-        T.poll = setInterval(function () { if (!document.hidden && MODE === 'teacher') teacherLoad(false); }, 15000);
+        T.poll = setInterval(function () { if (!document.hidden && MODE === 'teacher' && !T.busy) teacherLoad(false); }, 15000);
       }
       } catch (err) { toast('שגיאה בהצגת הנתונים: ' + errMsg(err)); if (first) teacherLogin('שגיאה בהצגת הנתונים: ' + errMsg(err)); }
     }, function (e) {
+      T.busy = false;
       var m = errMsg(e);
       if (/קוד/.test(m)) { try { sessionStorage.removeItem('fj_tcode'); } catch (x) { /* ignore */ } return teacherLogin(m); }
       toast('לא הצלחנו לרענן: ' + m);
@@ -1717,10 +1732,11 @@ var MOCK = (function () {
       '</div><div class="qrbox"><div id="qr" role="img" aria-label="ברקוד לכניסה לבדיקה"></div><p class="purl" id="p-url"></p></div></section>';
     projectorTick();
     clearInterval(P.poll);
-    P.poll = setInterval(function () { if (!document.hidden && MODE === 'projector') projectorTick(); }, 5000);
+    P.poll = setInterval(function () { if (!document.hidden && MODE === 'projector') projectorTick(); }, 6000);
   }
   function projectorTick() {
-    api('projectorStatus').then(function (r) {
+    if (P.busy) return; P.busy = true;
+    api('projectorStatus').then(function (r) { P.busy = false;
       var j = document.getElementById('p-j'); if (!j) return;
       j.textContent = r.joined; document.getElementById('p-d').textContent = r.done;
       document.getElementById('p-st').innerHTML = '<span class="pill ' + (r.open ? 'open' : 'closed') + '">' + (r.open ? 'הבדיקה פתוחה' : 'הבדיקה סגורה') + '</span>';
@@ -1733,7 +1749,7 @@ var MOCK = (function () {
           try { new QRCode(box, { text: url, width: 512, height: 512, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) { box.textContent = url; }
         } else box.textContent = url;
       }
-    }, function () { /* ננסה שוב בסבב הבא */ });
+    }, function () { P.busy = false; });
   }
 
   start();
